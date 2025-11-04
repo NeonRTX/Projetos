@@ -1,0 +1,327 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Desafio_Dojo_2._1
+{
+    class App
+    {
+
+        static void Main()
+        {
+            Banco banrisul = new Banco();
+            Console.WriteLine("Iniciando o sistema bancário...");
+
+            // Menu de operações
+            while (true)
+            {
+                Console.WriteLine("\n1 - Cadastrar novo cliente");
+                Console.WriteLine("2 - Cadastrar conta para cliente");
+                Console.WriteLine("3 - Listar clientes");
+                Console.WriteLine("4 - Consultar saldo de conta");
+                Console.WriteLine("5 - Efetuar depósito");
+                Console.WriteLine("6 - Efetuar saque");
+                Console.WriteLine("7 - Efetuar transferência");
+                Console.WriteLine("8 - Listar Contas");
+                Console.WriteLine("S - Sair");
+                Console.Write("Selecione a ação: ");
+                string opcao = Console.ReadLine().ToUpper();
+
+                if (opcao == "S")
+                    break;
+
+                switch (opcao)
+                {
+                    case "1":
+                        Console.WriteLine("Digite o nome do cliente: ");
+                        string nome = Console.ReadLine();
+                        Console.WriteLine("Digite o CPF do cliente: ");
+                        string cpf = Console.ReadLine();
+                        banrisul.CriarCliente(nome,cpf);
+                        break;
+                    case "2":
+                        Console.WriteLine("Digite o CPF do cliente: ");
+                        cpf = Console.ReadLine();
+                        Console.WriteLine("Digite o numero da conta: ");
+                        string conta = Console.ReadLine();                        
+                        Console.WriteLine("Digite o tipo de conta: ");
+                        Console.WriteLine("C: Corrente | P: Poupança");
+                        char tipo = Convert.ToChar(Console.ReadLine().ToUpper());
+                        banrisul.CriarContaCliente(cpf, conta, tipo);
+                        break;
+                    case "3":
+                        banrisul.ListarClientes();
+                        break;
+                    case "4":
+                        Console.WriteLine("Digite o numero da conta: ");
+                        conta = Console.ReadLine();
+                        banrisul.ConsultarSaldo(conta);
+                        break;
+                    case "5":
+                        Console.WriteLine("Digite o CPF do cliente: ");
+                        cpf = Console.ReadLine();
+                        Console.WriteLine("Digite o numero da conta: ");
+                        conta = Console.ReadLine();
+                        Console.WriteLine("Digite o valor de depósito: ");
+                        decimal deposito = Convert.ToInt32(Console.ReadLine());
+                        banrisul.DepositarNaConta(cpf, conta, deposito);
+                        break;
+                    case "6":
+                        Console.WriteLine("Digite o CPF do cliente: ");
+                        cpf = Console.ReadLine();
+                        Console.WriteLine("Digite o numero da conta: ");
+                        conta = Console.ReadLine();
+                        Console.WriteLine("Digite o valor de sauqe: ");
+                        decimal saque = Convert.ToInt32(Console.ReadLine());
+                        banrisul.SacadarDaConta(cpf, conta, saque);
+                        break;
+                    case "7":
+                        Console.WriteLine("Digite a conta de origem: ");
+                        string contaOri = Console.ReadLine();
+                        Console.WriteLine("Digite a conta de destino: ");
+                        string contaDes = Console.ReadLine();
+                        Console.WriteLine("Digite o valor de transferência: ");
+                        decimal transf = Convert.ToInt32(Console.ReadLine());
+                        banrisul.TransferirSaldo(contaOri, contaDes, transf);
+                        break;
+                    case "8":
+                        banrisul.ListarContas();
+                        break;
+                    default:
+                        Console.WriteLine("\nOpção inválida.");
+                        break;
+                }
+            }
+
+            Console.WriteLine("\nEncerrando o sistema bancário...");
+        }
+    }
+
+    abstract class  Conta
+    {
+        public string NumeroConta;
+        public decimal Saldo;
+        public char TipoConta;
+
+        public Conta(string numeroConta, char tipoConta)
+        {
+            NumeroConta = numeroConta;
+            Saldo = 0;
+            TipoConta = tipoConta;
+        }
+
+        public void Depositar(decimal valorDeposito)
+        {
+            Saldo += valorDeposito;
+        }        
+        
+        public void Sacar(decimal valorSaque)
+        {
+            Saldo -= valorSaque;
+        }
+
+    }
+
+    class ContaPoupanca : Conta
+    {        
+        public ContaPoupanca(string numeroConta, char tipoConta) : base(numeroConta, tipoConta)
+        {
+            NumeroConta = numeroConta;
+            Saldo = 0;
+            TipoConta = tipoConta;
+        }                  
+    }
+
+    class ContaCorrente : Conta
+    {
+        public ContaCorrente(string numeroConta, char tipoConta) : base(numeroConta, tipoConta)
+        {
+            NumeroConta = numeroConta;
+            Saldo = 0;
+            TipoConta = tipoConta;
+        }
+    }
+
+    class Cliente
+    {
+        //Criando - LISTA DE Contas
+        public List<Conta> ListaContas = new List<Conta>();
+
+        public string NomeCliente;
+        public string CPF { get; set;}
+        //private Conta Conta;
+
+        public Cliente (string nomeCliente, string cpf)
+        {
+            NomeCliente = nomeCliente;
+            CPF = cpf;
+        }
+
+        public void AdicionarConta(Conta conta)
+        {
+            ListaContas.Add(conta);        
+         }
+    }
+
+    class Banco
+    {
+        //Criando - LISTA DE CLIENTES
+        private List<Cliente> ListaClientes = new List<Cliente>();        
+
+        //Metodo para criar cliente
+        public void CriarCliente(string nome, string cpf)
+        {
+            //criando cliente e atribuindo a variavel
+            Cliente cliente = new Cliente(nome, cpf);
+            //adicionando a variavel cliente a LISTA DE CLIENTES
+            ListaClientes.Add(cliente);
+        }
+
+        //Metodo para criar conta do cliente
+        public void CriarContaCliente(string cpf, string numeroConta, char tipo)
+        {
+
+            bool clienteEncontrado = false;
+            for (int i = 0; i < ListaClientes.Count; i++)
+            {                            
+                if (cpf == ListaClientes[i].CPF)
+                {
+                    if (tipo == 'P')
+                    {
+                        Conta conta = new ContaPoupanca(numeroConta, tipo);
+                        ListaClientes[i].AdicionarConta(conta);
+                    } else if (tipo == 'C')
+                    {
+                        Conta conta = new ContaCorrente(numeroConta, tipo);
+                        ListaClientes[i].AdicionarConta(conta);
+                    }
+                    clienteEncontrado = true;
+                    
+                } 
+
+            }
+            if (clienteEncontrado == false)
+            {
+                Console.WriteLine("Cliente não encontrado...");
+            }
+        }
+
+        //Metodo para depositar na conta
+        public void DepositarNaConta(string cpf, string numeroConta, decimal valDeposito)
+        {            
+            bool clienteEncontrado = false;
+            
+            foreach (var cliente in ListaClientes)
+            {
+                if (cpf == cliente.CPF)
+                {
+                    foreach (var conta in cliente.ListaContas)
+                    {
+                        if (numeroConta == conta.NumeroConta)
+                        {
+                            conta.Depositar(valDeposito);
+                        }                        
+                    }
+                    clienteEncontrado = true;
+                }
+            }
+             if (clienteEncontrado == false)
+            {
+                Console.WriteLine("Cliente não encontrado...");
+            }
+        }
+
+        //Metodo para sacar da conta
+        public void SacadarDaConta(string cpf, string numeroConta, decimal valSaque)
+        {
+            bool ClienteEncontrado = false;
+            
+            foreach (var cliente in ListaClientes)
+            {
+                if (cpf == cliente.CPF)
+                {
+                    foreach (var conta in cliente.ListaContas)
+                    {
+                        if (numeroConta == conta.NumeroConta)
+                        {
+                            conta.Sacar(valSaque);
+                        }                        
+                    }
+                    ClienteEncontrado = true;
+                }
+            }
+             if (ClienteEncontrado == false)
+            {
+                Console.WriteLine("Cliente não encontrado...");
+            }
+        }
+
+        //Metodo para listar clientes
+        public void ListarClientes()
+        {
+            foreach (var cliente in ListaClientes)
+            {
+                Console.WriteLine($"Nome: {cliente.NomeCliente}");
+                Console.WriteLine($"Nome: {cliente.CPF}\n");
+            }
+        }
+
+        //Metodo para listar contas
+        public void ListarContas()
+        {            
+            foreach (Cliente cliente in ListaClientes)
+            {
+                Console.WriteLine($"Nome: {cliente.NomeCliente}");
+                    foreach (Conta conta in cliente.ListaContas)
+                {
+                    Console.WriteLine($"Conta: {conta.NumeroConta}" + $" Tipo: {(conta.TipoConta == 'C' ? "Corrente" : "Poupança")}");
+                }
+            }
+        }
+
+        //Metodo para consultar saldo de conta
+        public void ConsultarSaldo(string NumeroConta)
+        {
+            bool contaExiste = false;
+            foreach (Cliente cliente in ListaClientes)
+            {
+                foreach(Conta conta in cliente.ListaContas)
+                {
+                    if (conta.NumeroConta == NumeroConta)
+                    {
+                        Console.Write($"O saldo da conta {conta.NumeroConta} é: R${conta.Saldo}");
+                        contaExiste = true;
+                    } 
+                }
+            }
+            if (contaExiste == false)
+            {
+                Console.WriteLine("Conta não existe...");
+            }
+        }
+
+        //Metodo para transfêrencia de saldo
+        public void TransferirSaldo(string contaOrigem, string contaDestino, decimal valor)
+        {
+            //bool clienteEncontrado = false;
+
+            foreach (Cliente cliente in ListaClientes)
+            {
+                foreach (Conta conta in cliente.ListaContas)
+                {
+                    if (contaOrigem == conta.NumeroConta)
+                    {
+                        SacadarDaConta(cliente.CPF, contaOrigem, valor);
+                    }
+                    if (contaDestino == conta.NumeroConta)
+                    {
+                        DepositarNaConta(cliente.CPF, contaDestino,valor);
+                    }
+                }
+            }
+        }
+
+    }
+}
