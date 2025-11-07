@@ -1,0 +1,225 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Sistema_De_Combate
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            //Instâncias dos Personagens
+            Guerreiro guerreiro1 = new Guerreiro();
+            Arqueiro arqueiro1 = new Arqueiro();
+            Mago mago1 = new Mago();
+            Clerigo clerigo1 = new Clerigo();
+            //Instâncias dos Inimigos
+            Goblin goblin1 = new Goblin();
+
+            Inicio();
+
+            int turnos = 0;
+            while (true)
+            {
+                
+                turnos++;
+                guerreiro1.VerificarArmadura();
+                Console.WriteLine($"{turnos}° TURNO\n");        
+                Console.WriteLine($"{goblin1.Vida}");
+                Console.WriteLine($"Armadura Atual: {guerreiro1.Armadura}\n");        
+                Console.WriteLine("Escolha a ação que deseja tomar...");
+                Console.WriteLine("1 - Atacar");
+                Console.WriteLine("2 - Defender");
+                Console.WriteLine("3 - Usar Especial");
+
+                string opcao = Console.ReadLine();
+                switch (opcao)
+                {
+                    case "1":
+                        guerreiro1.AtacarGoblin(goblin1);
+                        break;                        
+                    case "2":
+                        guerreiro1.Defender();
+                        break;
+                    case "3":
+                        break;
+                    
+                }
+                
+            }                                   
+        }
+    public static void Inicio()
+    {
+      Console.WriteLine("\nSua PARTY foi mandada numa missão para acabar com o covil dos goblins...");
+      Console.WriteLine("Um Guerreiro...");
+      Console.WriteLine("Um Mago...");
+      Console.WriteLine("Um Arqueiro...");
+      Console.WriteLine("Um Clérigo...\n");
+      Console.WriteLine("Aperte qualquer tecla para continuar...");
+      Console.ReadKey();
+      Console.Clear();
+      Console.WriteLine("\nAdentrando as cavernas vocês se deparam com seu primeiro inimigo...");
+      Console.WriteLine("Um pequeno goblin está a frente de vocês...");
+      Console.WriteLine("E agora você precisa tomar uma decisão...\n");
+      Console.WriteLine("Aperte qualquer tecla para continuar...");
+      Console.ReadKey();
+      Console.Clear();
+    }       
+  }    
+
+    abstract class Personagem
+    {
+        public int Vida;
+        public int Estamina;
+        public int Ataque;
+        public int Armadura;
+
+        //Método para ROLAGEM DE DADOS
+        private static Random dadoPersonagem = new Random();
+
+        public virtual void UsarEspecial() 
+        {
+      
+        } 
+
+        public virtual void AtacarGoblin(Goblin goblin)
+        {
+            int acertoPersonagem;
+            int dano;
+            int dadoAcerto;
+
+            Console.Clear();
+
+            dadoAcerto = dadoPersonagem.Next(1, 21);
+            acertoPersonagem = Ataque + dadoAcerto;
+            if (dadoAcerto >= 19)
+      {
+        Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+        Console.WriteLine($"Total: {acertoPersonagem}");
+        Console.WriteLine("Voce CRITOU o ataque");
+        dano = dadoPersonagem.Next(1, 9) * 2;
+        Console.WriteLine($"Dano total: {dano}");
+        goblin.Vida -= dano;
+      } else if (acertoPersonagem > goblin.Armadura)
+            {
+                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                Console.WriteLine("Voce acertou o ataque");
+                dano = dadoPersonagem.Next(1,9);
+                Console.WriteLine($"Dano total: {dano}");
+                goblin.Vida -= dano;
+            }  else if (acertoPersonagem < goblin.Armadura) { 
+        Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+        Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+        Console.WriteLine("Voce não acertou");
+      }
+        }
+      
+        public virtual void Defender()
+    {
+        Armadura += 5;
+    }
+    }    
+
+    class Guerreiro : Personagem 
+    {
+    int turnosArmadura = 0;
+    int turnosEspecial = 0;
+    public Guerreiro()
+        {           
+            Vida = 12;
+            Estamina = 3;
+            Ataque = 4;
+            Armadura = 18;  
+           
+        }
+        
+        public void VerificarArmadura()
+    {      
+      if (Armadura != 18)
+      {
+        turnosArmadura++;
+
+        if (turnosArmadura > 3)
+        {
+          Armadura = 18;
+          turnosArmadura = 0;
+        }
+      }
+    }    
+
+        public override void UsarEspecial()
+    {
+      Ataque += Ataque;
+
+    }
+      
+        public void VerificarEspecial()
+    {
+      if (turnosEspecial < 4)
+        turnosEspecial++;
+   
+    }
+        
+    }
+
+    class Mago : Personagem
+    {
+        public Mago()
+        {
+            Vida = 8;
+            Estamina = 3;
+            Ataque = 4;
+            Armadura = 14;
+        }
+    }
+
+    class Arqueiro : Personagem
+    {
+        public Arqueiro()
+        {
+            Vida = 12;
+            Estamina = 3;
+            Ataque = 4;
+            Armadura = 16;
+        }
+    }
+
+    class Clerigo : Personagem
+    {
+        public Clerigo()
+        {
+            Vida = 10;
+            Estamina = 3;
+            Ataque = 4;
+            Armadura = 12;
+        }
+    }
+
+    abstract class Inimigo
+    {
+    //Método para ROLAGEM DE DADOS
+    private static Random dadoInimigo = new Random();
+
+    public int Vida;
+        public int Estamina;
+        public int Ataque;
+        public int Armadura;      
+
+    }
+
+    class Goblin : Inimigo
+    {
+        public Goblin()
+        {
+            Vida = 7;
+            Estamina = 3;
+            Ataque = 4;
+            Armadura = 13;
+
+        }
+    }
+
+  }
