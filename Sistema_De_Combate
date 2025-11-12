@@ -11,7 +11,7 @@ namespace Sistema_De_Combate
         static void Main(string[] args)
         {
             Personagem jogadorAtual;
-            
+
             //Instâncias dos Personagens
             Guerreiro guerreiro = new Guerreiro();
             Mago mago = new Mago();
@@ -28,86 +28,100 @@ namespace Sistema_De_Combate
             int turnos = 0;
             while (true)
             {
-                
+
                 if (turnos != 0)
                 {
-                   goblin1.AtacarGuerreiro(jogadorAtual);
+                    
+                    if(guerreiro.Vida < mago.Vida && guerreiro.Armadura == 18)
+                    {
+                        goblin1.Atacar(guerreiro);
+                    } else if (mago.Vida < guerreiro.Vida)
+                    {
+                        goblin1.Atacar(mago);
+                    }
+                    
                 }
                 turnos++;
 
-                if(turnos % 2 == 0)
-                {
 
-                    jogadorAtual = guerreiro;
-                    guerreiro.VerificarEspecial();
-                } else
+                for (int i = 0; i < 2; i++)
                 {
-                    jogadorAtual = mago;
+                    if (i % 2 == 0)
+                    {
+                        jogadorAtual = mago;
+                    }
+                    else
+                    {
+                        jogadorAtual = guerreiro;
+                        guerreiro.VerificarEspecial();
+                    }
+
+                    /*if(jogadorAtual is Guerreiro)
+                    {
+                        jogadorAtual.VerificarEspecial();
+                    }
+
+                    jogadorAtual.VerificarArmadura();*/
+
+
+
+
+                    Console.WriteLine($"{turnos}° TURNO\n");
+
+                    Console.WriteLine("\n--GOBLIN--");
+                    Console.WriteLine($"Vida Atual: {goblin1.Vida}");
+                    Console.WriteLine($"Armadura Atual: {goblin1.Armadura}\n");
+
+                    Console.WriteLine($"--{jogadorAtual.Nome}--");
+                    Console.WriteLine($"Vida Atual: {jogadorAtual.Vida}");
+                    Console.WriteLine($"Armadura Atual: {jogadorAtual.Armadura}");
+                    Console.WriteLine($"Estamina Atual: {jogadorAtual.Estamina}\n");
+                    Console.WriteLine("Escolha a ação que deseja tomar...");
+                    Console.WriteLine("1 - Atacar");
+                    Console.WriteLine("2 - Defender");
+                    Console.WriteLine("3 - Usar Especial");
+
+
+                    string opcao = Console.ReadLine();
+                    Console.Clear();
+
+
+                    switch (opcao)
+                    {
+                        case "1":
+                            jogadorAtual.Atacar(goblin1);
+                            break;
+                        case "2":
+                            jogadorAtual.Defender();
+                            break;
+                        case "3":
+                            jogadorAtual.UsarEspecial();
+                            break;
+
+                    }
                 }
 
-                /*if(jogadorAtual is Guerreiro)
-                {
-                    jogadorAtual.VerificarEspecial();
-                }
-
-                jogadorAtual.VerificarArmadura();*/
-                
-                   
-                
-                    
-                Console.WriteLine($"{turnos}° TURNO\n");
-
-                Console.WriteLine("\n--GOBLIN--");
-                Console.WriteLine($"Vida Atual: {goblin1.Vida}");
-                Console.WriteLine($"Armadura Atual: {goblin1.Armadura}\n");
-
-                Console.WriteLine($"--{jogadorAtual.Nome}--");
-                Console.WriteLine($"Vida Atual: {jogadorAtual.Vida}");
-                Console.WriteLine($"Armadura Atual: {jogadorAtual.Armadura}");
-                Console.WriteLine($"Estamina Atual: {jogadorAtual.Estamina}\n");
-                Console.WriteLine("Escolha a ação que deseja tomar...");
-                Console.WriteLine("1 - Atacar");
-                Console.WriteLine("2 - Defender");
-                Console.WriteLine("3 - Usar Especial");
-
-                string opcao = Console.ReadLine();
-                Console.Clear();
-                
-                switch (opcao)
-                {
-                    case "1":
-                        jogadorAtual.Atacar(goblin1);
-                        break;                        
-                    case "2":
-                        jogadorAtual.Defender();
-                        break;
-                    case "3":
-                        jogadorAtual.UsarEspecial();
-                        break;
-                    
-                }
-                
-            }                                   
+            }
         }
-    public static void Inicio()
-    {
-      Console.WriteLine("\nVocê foi mandado numa missão para acabar com o covil dos goblins...");
-      /*Console.WriteLine("\nSua PARTY foi mandada numa missão para acabar com o covil dos goblins...");
-      Console.WriteLine("Um Guerreiro...");
-      Console.WriteLine("Um Mago...");
-      Console.WriteLine("Um Arqueiro...");
-      Console.WriteLine("Um Clérigo...\n");*/
-      Console.WriteLine("Aperte qualquer tecla para continuar...");
-      Console.ReadKey();
-      Console.Clear();
-      Console.WriteLine("\nAdentrando as cavernas você se depara com seu primeiro inimigo...");
-      Console.WriteLine("Um pequeno goblin está a sua frente...");
-      Console.WriteLine("E agora você precisa tomar uma decisão...\n");
-      Console.WriteLine("Aperte qualquer tecla para continuar...");
-      Console.ReadKey();
-      Console.Clear();
-    }       
-  }    
+        public static void Inicio()
+        {
+            //Console.WriteLine("\nVocê foi mandado numa missão para acabar com o covil dos goblins...");
+            Console.WriteLine("\nSua PARTY foi mandada numa missão para acabar com o covil dos goblins...");
+            Console.WriteLine("Um Guerreiro...");
+            Console.WriteLine("Um Mago...");
+           /* Console.WriteLine("Um Arqueiro...");
+            Console.WriteLine("Um Clérigo...\n");*/
+            Console.WriteLine("Aperte qualquer tecla para continuar...");
+            Console.ReadKey();
+            Console.Clear();
+            Console.WriteLine("\nAdentrando as cavernas vocês se deparam com seu primeiro inimigo...");
+            Console.WriteLine("Um pequeno goblin está a frente de vocês...");
+            Console.WriteLine("E agora vocês precisa tomar uma decisão...\n");
+            Console.WriteLine("Aperte qualquer tecla para continuar...");
+            Console.ReadKey();
+            Console.Clear();
+        }
+    }
 
     abstract class Personagem
     {
@@ -121,34 +135,34 @@ namespace Sistema_De_Combate
         //Método para ROLAGEM DE DADOS
         public static Random dadoPersonagem = new Random();
 
-        public virtual void UsarEspecial() 
+        public virtual void UsarEspecial()
         {
-      
-        } 
+
+        }
 
 
         public abstract void Atacar(Inimigo inimigo);
-        
-            
-        
-      
-        public virtual void Defender()
-    {
-        Armadura += 5;
-    }
-    }    
 
-    class Guerreiro : Personagem 
+
+
+
+        public virtual void Defender()
+        {
+            Armadura += 5;
+        }
+    }
+
+    class Guerreiro : Personagem
     {
-    int turnosArmadura = 0;
-    int turnosEspecial = 0;
-    bool Especial = false;
-    public Guerreiro()
-        {           
+        int turnosArmadura = 0;
+        int turnosEspecial = 0;
+        bool Especial = false;
+        public Guerreiro()
+        {
             Vida = 12;
             Estamina = 3;
             Ataque = 4;
-            Armadura = 18;  
+            Armadura = 18;
             Nome = "GUERREIRO";
         }
 
@@ -192,7 +206,7 @@ namespace Sistema_De_Combate
                 Console.WriteLine("Voce não acertou");
                 Console.WriteLine("========================\n");
 
-            } 
+            }
             else if (dadoAcerto >= 19 && Especial == true)
             {
                 Console.WriteLine("=== JOGADA GUERREIRO ===");
@@ -200,7 +214,7 @@ namespace Sistema_De_Combate
                 Console.WriteLine($"Total: {acertoPersonagem}");
                 Console.WriteLine("Voce CRITOU o ataque");
                 dano = dadoPersonagem.Next(1, 9) * 2;
-                danoE = dano/2;
+                danoE = dano / 2;
                 Console.WriteLine($"Dano total: {dano} + {danoE}");
                 Console.WriteLine("========================\n");
                 inimigo.Vida -= dano + danoE;
@@ -212,7 +226,7 @@ namespace Sistema_De_Combate
                 Console.WriteLine($"Total para acertar: {acertoPersonagem}");
                 Console.WriteLine("Voce acertou o ataque");
                 dano = dadoPersonagem.Next(1, 9);
-                danoE = dano/2;
+                danoE = dano / 2;
                 Console.WriteLine($"Dano total: {dano} + {danoE}");
                 Console.WriteLine("========================\n");
                 inimigo.Vida -= dano + danoE;
@@ -220,44 +234,46 @@ namespace Sistema_De_Combate
         }
 
         public void VerificarArmadura()
-    {      
-      if (Armadura != 18)
-      {
-        turnosArmadura++;
-
-        if (turnosArmadura > 3)
         {
-          Armadura = 18;
-          turnosArmadura = 0;
+            if (Armadura != 18)
+            {
+                turnosArmadura++;
+
+                if (turnosArmadura > 3)
+                {
+                    Armadura = 18;
+                    turnosArmadura = 0;
+                }
+            }
         }
-      }
-    }    
 
         public override void UsarEspecial()
-    {
-      Especial = true;
+        {
+            Especial = true;
             Estamina--;
-            
 
-    }
-      
+
+        }
+
         public void VerificarEspecial()
-    {
-      if (Especial == true)
-        turnosEspecial++;
-        if (turnosEspecial > 3)
-      {
-        Especial = false;
-        turnosEspecial = 0;
-      }
-   
-    }
-        
+        {
+            if (Especial == true)
+                turnosEspecial++;
+            if (turnosEspecial > 3)
+            {
+                Especial = false;
+                turnosEspecial = 0;
+            }
+
+        }
+
     }
 
-    
+
     class Mago : Personagem
     {
+
+        int turnosArmadura = 0;
         public Mago()
         {
             Vida = 8;
@@ -334,6 +350,21 @@ namespace Sistema_De_Combate
             }
         }
 
+        public void VerificarArmadura()
+        {
+            if (Armadura != 14)
+            {
+                turnosArmadura++;
+
+                if (turnosArmadura > 3)
+                {
+                    Armadura = 14;
+                    turnosArmadura = 0;
+                }
+            }
+        }
+
+
     }
 
     /*class Arqueiro : Personagem
@@ -361,7 +392,7 @@ namespace Sistema_De_Combate
 
     abstract class Inimigo
     {
-    //Método para ROLAGEM DE DADOS  
+        //Método para ROLAGEM DE DADOS  
         public static Random dadoInimigo = new Random();
         public int Vida;
         public int Estamina;
@@ -379,7 +410,7 @@ namespace Sistema_De_Combate
             Armadura = 13;
         }
 
-        public void AtacarGuerreiro(Guerreiro guerreiro)
+        public void Atacar(Personagem personagem)
         {
             int acertoInimigo;
             int dano;
@@ -398,9 +429,9 @@ namespace Sistema_De_Combate
                 dano = dadoInimigo.Next(1, 9) * 2;
                 Console.WriteLine($"Dano total: {dano}");
                 Console.WriteLine("========================\n");
-                guerreiro.Vida -= dano;
+                personagem.Vida -= dano;
             }
-            else if (acertoInimigo > guerreiro.Armadura)
+            else if (acertoInimigo > personagem.Armadura)
             {
                 Console.WriteLine("==== JOGADA GOBLIN ====");
                 Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
@@ -409,9 +440,9 @@ namespace Sistema_De_Combate
                 dano = dadoInimigo.Next(1, 9);
                 Console.WriteLine($"Dano total: {dano}");
                 Console.WriteLine("========================\n");
-                guerreiro.Vida -= dano;
+                personagem.Vida -= dano;
             }
-            else if (acertoInimigo < guerreiro.Armadura)
+            else if (acertoInimigo < personagem.Armadura)
             {
                 Console.WriteLine("==== JOGADA GOBLIN ====");
                 Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
@@ -428,4 +459,4 @@ namespace Sistema_De_Combate
 
     }
 
-  }
+}
