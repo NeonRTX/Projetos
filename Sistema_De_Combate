@@ -11,6 +11,8 @@ namespace Sistema_De_Combate
         static void Main(string[] args)
         {
             Personagem jogadorAtual;
+            //Inimigo inimigoAtual;
+            //Inimigo inimigoAtual;
 
             //Instâncias dos Personagens
             Guerreiro guerreiro = new Guerreiro();
@@ -20,9 +22,10 @@ namespace Sistema_De_Combate
 
             //Instâncias dos Inimigos
             Blindado blindado = new Blindado();
+            Harpia harpia = new Harpia();
 
+            //inimigoAtual = blindado
             Inicio(blindado);
-
             int turnos = 0;
             while (blindado.Vivo == true)
             {
@@ -121,12 +124,28 @@ namespace Sistema_De_Combate
 
                     while (teste)
                     {
+                        if(mago.Vivo == false)
+                        {
+                            Console.WriteLine("O MAGO ESTÁ MORTO...");
+                        }
+                        if (guerreiro.Vivo == false)
+                        {
+                            Console.WriteLine("O GUERREIRO ESTÁ MORTO...");
+                        }
+                        if (arqueiro.Vivo == false)
+                        {
+                            Console.WriteLine("O ARQUEIRO ESTÁ MORTO...");
+                        }
+                        if (clerigo.Vivo == false)
+                        {
+                            Console.WriteLine("O CLÉRIGO ESTÁ MORTO...");
+                        }
                         Console.WriteLine($"{turnos}° TURNO\n");
                         Console.WriteLine($"--{blindado.Nome}--");
-                        Console.WriteLine($"Vida Atual: {blindado.Vida}");
+                        Console.WriteLine($"Vida Atual: {blindado.Vida}/{blindado.VidaInicial}");
                         Console.WriteLine($"Armadura Atual: {blindado.Armadura}\n");
                         Console.WriteLine($"--{jogadorAtual.Nome}--");
-                        Console.WriteLine($"Vida Atual: {jogadorAtual.Vida}");
+                        Console.WriteLine($"Vida Atual: {jogadorAtual.Vida}/{jogadorAtual.VidaInicial}");
                         Console.WriteLine($"Armadura Atual: {jogadorAtual.Armadura}");
                         Console.WriteLine($"Estamina Atual: {jogadorAtual.Estamina}\n");
                         Console.WriteLine("Escolha a ação que deseja tomar...");
@@ -167,21 +186,228 @@ namespace Sistema_De_Combate
                     blindado.VerificarSeMorreu();
                     if (blindado.Vivo == false)
                     {
+                        if (mago.Vida == 0)
+                        {
+                            Console.WriteLine("O clérigo curou o mago");
+                            mago.Vida += 5;
+                            mago.Vivo = true;
+
+                        }
+                        if (arqueiro.Vida == 0)
+                        {
+                            Console.WriteLine("O clérigo curou o arqueiro");
+                            arqueiro.Vida += 5;
+                            arqueiro.Vivo = true;
+
+                        }
+                        if (guerreiro.Vida == 0)
+                        {
+                            Console.WriteLine("O clérigo curou o guerreiro");
+                            guerreiro.Vida += 5;
+                            guerreiro.Vivo = true;
+
+                        }
+
+                        mago.Vida += mago.VidaInicial;
+                        mago.VidaInicial += mago.VidaInicial;
+                        guerreiro.Vida += guerreiro.VidaInicial;
+                        guerreiro.VidaInicial += guerreiro.VidaInicial;
+                        arqueiro.Vida += arqueiro.VidaInicial;
+                        arqueiro.VidaInicial += arqueiro.VidaInicial;
+                        clerigo.Vida += clerigo.VidaInicial;
+                        clerigo.VidaInicial += clerigo.VidaInicial;
+                        turnos = 0;
+
                         break;
                     }
                 }
 
             }
 
+            SegundoEncontro(harpia);
+            turnos = 0;
+            while (harpia.Vivo == true)
+            {
+                harpia.IA_Harpia(turnos, harpia, guerreiro, mago, arqueiro, clerigo);
+
+                turnos++;
+
+                for (int i = 0; i < 4; i++)
+                {
+                    if (i == 0 && mago.Vida > 0)
+                    {
+                        jogadorAtual = mago;
+                        mago.VerificarArmadura();
+                    }
+                    else if (i == 1 && guerreiro.Vida > 0)
+                    {
+                        jogadorAtual = guerreiro;
+                        guerreiro.VerificarEspecial();
+                        guerreiro.VerificarArmadura();
+                    }
+                    else if (i == 2 && arqueiro.Vida > 0)
+                    {
+                        jogadorAtual = arqueiro;
+                        arqueiro.VerificarEspecial();
+                        arqueiro.VerificarArmadura();
+                    }
+                    else if (i == 3 && clerigo.Vida > 0)
+                    {
+                        jogadorAtual = clerigo;
+                        clerigo.VerificarArmadura();
+                    }
+                    else if (guerreiro.Vida > 0 && mago.Vida == 0 && arqueiro.Vida == 0 && clerigo.Vida == 0)
+                    {
+                        jogadorAtual = guerreiro;
+                        guerreiro.VerificarEspecial();
+                        guerreiro.VerificarArmadura();
+                        i++;
+                        i++;
+                        i++;
+                    }
+                    else if (guerreiro.Vida > 0 && mago.Vida == 0 && arqueiro.Vida == 0)
+                    {
+                        jogadorAtual = guerreiro;
+                        guerreiro.VerificarEspecial();
+                        guerreiro.VerificarArmadura();
+                        i++;
+                        i++;
+                    }
+                    else if (guerreiro.Vida > 0 && mago.Vida == 0)
+                    {
+                        jogadorAtual = guerreiro;
+                        guerreiro.VerificarEspecial();
+                        guerreiro.VerificarArmadura();
+                        i++;
+                    }
+                    else if (arqueiro.Vida > 0 && guerreiro.Vida == 0 && mago.Vida == 0 && clerigo.Vida == 0)
+                    {
+                        jogadorAtual = arqueiro;
+                        arqueiro.VerificarEspecial();
+                        arqueiro.VerificarArmadura();
+                        i++;
+                        i++;
+                        i++;
+                    }
+                    else if (arqueiro.Vida > 0 && guerreiro.Vida == 0 && mago.Vida == 0)
+                    {
+                        jogadorAtual = arqueiro;
+                        arqueiro.VerificarEspecial();
+                        arqueiro.VerificarArmadura();
+                        i++;
+                        i++;
+                    }
+                    else if (clerigo.Vida > 0 && guerreiro.Vida == 0 && mago.Vida == 0 && arqueiro.Vida == 0)
+                    {
+                        jogadorAtual = clerigo;
+                        clerigo.VerificarArmadura();
+                        i++;
+                        i++;
+                        i++;
+                    }
+                    else if (guerreiro.Vida > 0)
+                    {
+                        jogadorAtual = guerreiro;
+                        guerreiro.VerificarEspecial();
+                        guerreiro.VerificarArmadura();
+                    }
+                    else
+                        jogadorAtual = null;
+                    /*if(jogadorAtual is Guerreiro)
+                    {
+                        jogadorAtual.VerificarEspecial();
+                    }
+
+                    jogadorAtual.VerificarArmadura();*/
+                    bool teste = true;
+
+                    while (teste)
+                    {
+                        if (mago.Vivo == false)
+                        {
+                            Console.WriteLine("O MAGO ESTÁ MORTO...");
+                        }
+                        if (guerreiro.Vivo == false)
+                        {
+                            Console.WriteLine("O GUERREIRO ESTÁ MORTO...");
+                        }
+                        if (arqueiro.Vivo == false)
+                        {
+                            Console.WriteLine("O ARQUEIRO ESTÁ MORTO...");
+                        }
+                        if (clerigo.Vivo == false)
+                        {
+                            Console.WriteLine("O CLÉRIGO ESTÁ MORTO...");
+                        }
+                        Console.WriteLine($"{turnos}° TURNO\n");
+                        Console.WriteLine($"--{harpia.Nome}--");
+                        Console.WriteLine($"Vida Atual: {harpia.Vida}/{harpia.VidaInicial}");
+                        Console.WriteLine($"Armadura Atual: {harpia.Armadura}\n");
+                        Console.WriteLine($"--{jogadorAtual.Nome}--");
+                        Console.WriteLine($"Vida Atual: {jogadorAtual.Vida}/{jogadorAtual.VidaInicial}");
+                        Console.WriteLine($"Armadura Atual: {jogadorAtual.Armadura}");
+                        Console.WriteLine($"Estamina Atual: {jogadorAtual.Estamina}\n");
+                        Console.WriteLine("Escolha a ação que deseja tomar...");
+                        Console.WriteLine("1 - Atacar");
+                        Console.WriteLine("2 - Defender");
+                        Console.WriteLine("3 - Usar Especial");
+
+                        string opcao = Console.ReadLine();
+                        Console.Clear();
+
+                        switch (opcao)
+                        {
+                            case "1":
+                                jogadorAtual.Atacar(harpia);
+                                teste = false;
+                                break;
+                            case "2":
+                                jogadorAtual.Defender();
+                                teste = false;
+
+                                break;
+                            case "3":
+                                if (jogadorAtual.Estamina == 0)
+                                {
+                                    Console.WriteLine("Você não possui mais estamina...");
+                                    break;
+                                }
+                                if (jogadorAtual == clerigo)
+                                {
+                                    clerigo.UsarEspecialClerigo(mago, guerreiro, arqueiro, clerigo);
+                                }
+                                jogadorAtual.UsarEspecial(blindado);
+                                teste = false;
+
+                                break;
+                        }
+                    }
+                    harpia.VerificarSeMorreu();
+                    if (harpia.Vivo == false)
+                    {
+                        mago.Vida += mago.VidaInicial;
+                        mago.VidaInicial += mago.VidaInicial;
+                        guerreiro.Vida += guerreiro.VidaInicial;
+                        guerreiro.VidaInicial += guerreiro.VidaInicial;
+                        arqueiro.Vida += arqueiro.VidaInicial;
+                        arqueiro.VidaInicial += arqueiro.VidaInicial;
+                        clerigo.Vida += clerigo.VidaInicial;
+                        clerigo.VidaInicial += clerigo.VidaInicial;
+                        turnos = 0;
+
+                        break;
+                    }
+                }
+
+            }
         }
         public static void Inicio(Blindado blindado)
         {
-            //Console.WriteLine("\nVocê foi mandado numa missão para acabar com o covil dos goblins...");
             Console.WriteLine("\nSua PARTY foi mandada numa missão para investigar a MASMORRA SANGRENTA...");
             Console.WriteLine("Um Guerreiro...");
             Console.WriteLine("Um Mago...");
-            /* Console.WriteLine("Um Arqueiro...");
-             Console.WriteLine("Um Clérigo...\n");*/
+            Console.WriteLine("Um Arqueiro...");
+            Console.WriteLine("Um Clérigo...\n");
             Console.WriteLine("Aperte qualquer tecla para continuar...");
             Console.ReadKey();
             Console.Clear();
@@ -189,6 +415,29 @@ namespace Sistema_De_Combate
             Console.WriteLine($"Um gramde {blindado.Nome} está a frente de vocês...");
             Console.WriteLine($"Ele é um guarda alto e forte e com uma armadura quase impenetrável...");
             Console.WriteLine("E agora vocês precisa tomar uma decisão...\n");
+            Console.WriteLine("Aperte qualquer tecla para continuar...");
+            Console.ReadKey();
+            Console.Clear();
+        }
+
+        public static void SegundoEncontro(Harpia harpia)
+        {
+            Console.Clear();
+            Console.WriteLine("\nSua PARTY recistiu ao primeiro encontro...");
+            Console.WriteLine("Vocês enfim entram na MAMORRA SANGRENTA");
+            Console.WriteLine("Um ambeinte úmido e desagradável...");
+            Console.WriteLine("O cheiro de sangue e mofo adentra o nariz de todos...");
+            Console.WriteLine("Mas vocês tem uma missão a cumprir...\n");
+            Console.WriteLine("Aperte qualquer tecla para continuar...");
+            Console.ReadKey();
+            Console.Clear();
+            Console.WriteLine("\nAo fazer uma curva vocês adentram um grande salão...");
+            Console.WriteLine("Correntes e ossos espalhados enfeitam o lugar...");
+            Console.WriteLine("Então vocês escutam um bater de asas...");
+            Console.WriteLine($"ao olhar para cima voces veem uma grande {harpia.Nome}...");
+            Console.WriteLine("Ela sobrevou vocês num razante e então para a frente de vocês...");
+            Console.WriteLine("Ela parece ser mais forte que o BLINDADO...");
+            Console.WriteLine("Mas vocês não entraram aqui para fugir...");
             Console.WriteLine("Aperte qualquer tecla para continuar...");
             Console.ReadKey();
             Console.Clear();
@@ -224,11 +473,10 @@ namespace Sistema_De_Combate
             {
                 Vivo = false;
                 Console.WriteLine($"O {Nome} morreu...");
-                //Console.WriteLine("...");
                 Console.ReadKey();
+                Console.Clear();
             }
         }
-
     }
 
     class Guerreiro : Personagem
@@ -872,13 +1120,48 @@ namespace Sistema_De_Combate
         {
             int acertoInimigo;
             int dano;
-            int dadoAcerto;
-
-            //Console.Clear();
+            int dadoAcerto;            
 
             dadoAcerto = dadoInimigo.Next(1, 21);
             acertoInimigo = Ataque + dadoAcerto;
-            if (dadoAcerto >= 19)
+            if (dadoAcerto >= 19 && Vida < VidaInicial /2)
+            {
+                acertoInimigo = (2 * Ataque) + dadoAcerto;
+                Console.WriteLine($"==== JOGADA {Nome} ====");
+                Console.WriteLine($"====== ENFURECIDO ======");
+                Console.WriteLine($"O {Nome} atacou o {personagem.Nome}");
+                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque*2}");
+                Console.WriteLine($"Total: {acertoInimigo}");
+                Console.WriteLine($"O {Nome} CRITOU o ataque");
+                dano = dadoInimigo.Next(1, 9)*2;
+                dano = dano*2;
+                Console.WriteLine($"Dano total: {dano}");
+                Console.WriteLine("========================\n");
+                personagem.Vida -= dano;
+                if (personagem.Vida < 0)
+                {
+                    personagem.Vida = 0;
+                }
+            }
+            else if (dadoAcerto < 19 && Vida < VidaInicial / 2)
+            {
+                acertoInimigo = (2 * Ataque) + dadoAcerto;
+                Console.WriteLine($"==== JOGADA {Nome} ====");
+                Console.WriteLine($"====== ENFURECIDO ======");
+                Console.WriteLine($"O {Nome} atacou o {personagem.Nome}");
+                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque * 2}");
+                Console.WriteLine($"Total: {acertoInimigo}");
+                Console.WriteLine($"O {Nome} acertou o ataque");
+                dano = dadoInimigo.Next(1, 9) * 2;
+                Console.WriteLine($"Dano total: {dano}");
+                Console.WriteLine("========================\n");
+                personagem.Vida -= dano;
+                if (personagem.Vida < 0)
+                {
+                    personagem.Vida = 0;
+                }
+            }
+            else if (dadoAcerto >= 19)
             {
                 Console.WriteLine($"==== JOGADA {Nome} ====");
                 Console.WriteLine($"O {Nome} atacou o {personagem.Nome}");
@@ -894,7 +1177,7 @@ namespace Sistema_De_Combate
                     personagem.Vida = 0;
                 }
             }
-            else if (acertoInimigo > personagem.Armadura)
+            else if (acertoInimigo >= personagem.Armadura)
             {
                 Console.WriteLine($"==== JOGADA {Nome} ====");
                 Console.WriteLine($"O {Nome} atacou o {personagem.Nome}");
@@ -1022,16 +1305,7 @@ namespace Sistema_De_Combate
                         guerreiro.Vida = 0;
                     }
                 }
-                else if (guerreiro.Vida < mago.Vida && guerreiro.Armadura == guerreiro.ArmaduraBase)
-                {
-                    blindado.Atacar(guerreiro);
-                    guerreiro.VerificarSeMorreu();
-                    if (guerreiro.Vivo == false)
-                    {
-                        guerreiro.Vida = 0;
-                    }
-                }
-                else if (mago.Vida < guerreiro.Vida)
+                else if (mago.Vida > 0 && guerreiro.Vida == 0)
                 {
                     blindado.Atacar(mago);
                     mago.VerificarSeMorreu();
@@ -1040,31 +1314,58 @@ namespace Sistema_De_Combate
                         mago.Vida = 0;
                     }
                 }
-                else if (mago.Vida < guerreiro.Vida && guerreiro.Armadura == guerreiro.ArmaduraBase && mago.Armadura > mago.ArmaduraBase)
-                {
-                    blindado.Atacar(guerreiro);
-                    guerreiro.VerificarSeMorreu();
-                    if (guerreiro.Vivo == false)
-                    {
-                        guerreiro.Vida = 0;
-                    }
-                }
-                else if (mago.Vida < guerreiro.Vida && guerreiro.Armadura > guerreiro.ArmaduraBase && mago.Armadura == mago.ArmaduraBase)
-                {
-                    blindado.Atacar(mago);
-                    mago.VerificarSeMorreu();
-                    if (mago.Vivo == false)
-                    {
-                        mago.Vida = 0;
-                    }
-                }
-                else if (guerreiro.Armadura > guerreiro.ArmaduraBase && mago.Armadura > mago.ArmaduraBase && arqueiro.Armadura == arqueiro.ArmaduraBase)
+                else if (mago.Vida == 0 && guerreiro.Vida == 0 && arqueiro.Vida > 0)
                 {
                     blindado.Atacar(arqueiro);
                     arqueiro.VerificarSeMorreu();
                     if (arqueiro.Vivo == false)
                     {
                         arqueiro.Vida = 0;
+                    }
+                }
+                else if (mago.Vida == 0 && guerreiro.Vida == 0 && arqueiro.Vida == 0 && clerigo.Vida > 0)
+                {
+                    blindado.Atacar(clerigo);
+                    clerigo.VerificarSeMorreu();
+                    if (clerigo.Vivo == false)
+                    {
+                        clerigo.Vida = 0;
+                    }
+                }
+                else if (mago.Vida < guerreiro.Vida && mago.Vida < arqueiro.Vida && mago.Vida < clerigo.Vida)
+                {
+                    blindado.Atacar(mago);
+                    mago.VerificarSeMorreu();
+                    if (mago.Vivo == false)
+                    {
+                        mago.Vida = 0;
+                    }
+                }
+                else if (arqueiro.Vida < guerreiro.Vida && arqueiro.Vida < mago.Vida && arqueiro.Vida < clerigo.Vida)
+                {
+                    blindado.Atacar(arqueiro);
+                    arqueiro.VerificarSeMorreu();
+                    if (arqueiro.Vivo == false)
+                    {
+                        arqueiro.Vida = 0;
+                    }
+                }
+                else if (clerigo.Vida < guerreiro.Vida && clerigo.Vida < mago.Vida && clerigo.Vida < arqueiro.Vida)
+                {
+                    blindado.Atacar(clerigo);
+                    clerigo.VerificarSeMorreu();
+                    if (clerigo.Vivo == false)
+                    {
+                        clerigo.Vida = 0;
+                    }
+                }
+                else if (guerreiro.Vida < mago.Vida && guerreiro.Vida < mago.Vida && guerreiro.Vida < clerigo.Vida)
+                {
+                    blindado.Atacar(guerreiro);
+                    guerreiro.VerificarSeMorreu();
+                    if (guerreiro.Vivo == false)
+                    {
+                        guerreiro.Vida = 0;
                     }
                 }
             }
@@ -1074,13 +1375,189 @@ namespace Sistema_De_Combate
 
     class Harpia : Inimigo
     {
+         
+        int contadorEspecial = 0;
+
         public Harpia()
         {
+            VidaInicial = 60;
             Vida = 60;
             Estamina = 3;
             Ataque = 6;
             Armadura = 13;
+            Vivo = true;
+            Nome = "HARPIA";
         }
+
+        public void Atacar(Personagem personagem)
+        {
+            int acertoInimigo;
+            int dano;
+            int dadoAcerto;
+
+            dadoAcerto = dadoInimigo.Next(1, 21);
+            acertoInimigo = Ataque + dadoAcerto;
+            
+            if (dadoAcerto >= 19)
+            {
+                Console.WriteLine($"==== JOGADA {Nome} ====");
+                Console.WriteLine($"O {Nome} atacou o {personagem.Nome}");
+                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                Console.WriteLine($"Total: {acertoInimigo}");
+                Console.WriteLine($"O {Nome} CRITOU o ataque");
+                dano = dadoInimigo.Next(1, 7) + dadoInimigo.Next(1, 7) + Ataque;
+                dano = dano*2;
+                Console.WriteLine($"Dano total: {dano}");
+                Console.WriteLine("========================\n");
+                personagem.Vida -= dano;
+                if (personagem.Vida < 0)
+                {
+                    personagem.Vida = 0;
+                }
+            }
+            else if (acertoInimigo >= personagem.Armadura)
+            {
+                Console.WriteLine($"==== JOGADA {Nome} ====");
+                Console.WriteLine($"O {Nome} atacou o {personagem.Nome}");
+                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                Console.WriteLine($"Total para acertar: {acertoInimigo}");
+                Console.WriteLine($"O {Nome} acertou o ataque");
+                dano = dadoInimigo.Next(1, 7) + dadoInimigo.Next(1, 7) + Ataque;
+                Console.WriteLine($"Dano total: {dano}");
+                Console.WriteLine("========================\n");
+                personagem.Vida -= dano;
+                if (personagem.Vida < 0)
+                {
+                    personagem.Vida = 0;
+                }
+            }
+            else if (acertoInimigo < personagem.Armadura)
+            {
+                Console.WriteLine($"==== JOGADA {Nome} ====");
+                Console.WriteLine($"O {Nome} atacou o {personagem.Nome}");
+                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                Console.WriteLine($"Total para acertar: {acertoInimigo}");
+                Console.WriteLine($"O {Nome} não acertou");
+                Console.WriteLine("========================\n");
+            }
+        }
+
+        public void VerificarSeMorreu()
+        {
+            if (Vida <= 0)
+            {
+                Vivo = false;
+                Console.WriteLine($"Você matou o {Nome}...");
+                Console.WriteLine("Caminho para a masmorra livre...");
+                Console.ReadKey();
+            }
+        }
+
+        public void usarEspecial(Guerreiro guerreiro, Mago mago, Arqueiro arqueiro, Clerigo clerigo)
+        {
+            int dano;
+
+            dano = dadoInimigo.Next(1, 7) *6 ;
+            guerreiro.Vida -= dano;
+            mago.Vida -= dano;
+            arqueiro.Vida -= dano;
+            clerigo.Vida -= dano;
+            Estamina--;
+
+            Console.WriteLine($"=== JOGADA {Nome} ===");
+            Console.WriteLine($"{Nome} usou GRITO ENSURDECEDOR");
+            Console.WriteLine($"Dano Total: {dano}");
+            Console.WriteLine("TODOS OS PERSONAGENS FORAM AFETADOS");
+            Console.WriteLine("========================\n");
+
+            if (mago.Vida < 0)
+            {
+                mago.Vida = 0;
+            }
+            if (guerreiro.Vida < 0)
+            {
+                guerreiro.Vida = 0;
+            }
+            if (arqueiro.Vida < 0)
+            {
+                arqueiro.Vida = 0;
+            }
+            if (clerigo.Vida < 0)
+            {
+                clerigo.Vida = 0;
+            }
+
+        }
+
+        public void IA_Harpia(int turnos, Harpia harpia, Guerreiro guerreiro, Mago mago, Arqueiro arqueiro, Clerigo clerigo)
+        {
+            if (turnos != 0)
+            {                                
+                //Lógica para usar ou não o especial
+                if (guerreiro.Vida <= guerreiro.VidaInicial)
+                {
+                    contadorEspecial++;
+                }
+                if(mago.Vida <= mago.VidaInicial)
+                {
+                    contadorEspecial++;
+                }
+                if (arqueiro.Vida <= arqueiro.VidaInicial)
+                {
+                    contadorEspecial++;
+                }
+                if (clerigo.Vida <= arqueiro.VidaInicial)
+                {
+                    contadorEspecial++;
+                }
+                if (contadorEspecial >= 2 && Estamina > 0)
+                {
+                    usarEspecial(guerreiro, mago, arqueiro, clerigo);                    
+                }
+                contadorEspecial = 0;
+                //Lógica para ataques normais
+                
+                if (arqueiro.Vida > 0)
+                {
+                    harpia.Atacar(arqueiro);
+                    arqueiro.VerificarSeMorreu();
+                    if (arqueiro.Vivo == false)
+                    {
+                        arqueiro.Vida = 0;
+                    }
+                }
+                else if (mago.Vida > 0 && arqueiro.Vida == 0)
+                {
+                    harpia.Atacar(mago);
+                    mago.VerificarSeMorreu();
+                    if (mago.Vivo == false)
+                    {
+                        mago.Vida = 0;
+                    }
+                }
+                else if (clerigo.Vida > 0)
+                {
+                    harpia.Atacar(clerigo);
+                    clerigo.VerificarSeMorreu();
+                    if (clerigo.Vivo == false)
+                    {
+                        clerigo.Vida = 0;
+                    }
+                }
+                else if (guerreiro.Vida > 0 && clerigo.Vida == 0)
+                {
+                    harpia.Atacar(guerreiro);
+                    guerreiro.VerificarSeMorreu();
+                    if (guerreiro.Vivo == false)
+                    {
+                        guerreiro.Vida = 0;
+                    }
+                }
+            }
+        }
+
+
+
     }
 
 }
