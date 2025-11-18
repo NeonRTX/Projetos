@@ -1,3 +1,4 @@
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,25 +10,26 @@ namespace Sistema_De_Combate
     class Program
     {
         static void Main(string[] args)
-        {
-            Personagem jogadorAtual;
-            //Inimigo inimigoAtual;
-            //Inimigo inimigoAtual;
-
+        {            
             //Instâncias dos Personagens
             Guerreiro guerreiro = new Guerreiro();
             Mago mago = new Mago();
             Arqueiro arqueiro = new Arqueiro();
             Clerigo clerigo = new Clerigo();
+            Mortos mortos = new Mortos();
+
+            Personagem jogadorAtual = null;
 
             //Instâncias dos Inimigos
             Blindado blindado = new Blindado();
             Harpia harpia = new Harpia();
 
             //inimigoAtual = blindado
+            
+            //Primeiro encontro BLINDADO
             Inicio(blindado);
             int turnos = 0;
-            while (blindado.Vivo == true)
+            while (blindado.Vivo == true && jogadorAtual != mortos)
             {
                 blindado.IA_Blindado(turnos, blindado, guerreiro, mago, arqueiro, clerigo);
 
@@ -112,19 +114,26 @@ namespace Sistema_De_Combate
                         guerreiro.VerificarEspecial();
                         guerreiro.VerificarArmadura();
                     }
+                    else if (clerigo.Vida == 0 && guerreiro.Vida == 0 && mago.Vida == 0 && arqueiro.Vida == 0)
+                    {
+                        jogadorAtual = mortos;
+                        break;
+                    }
                     else
                         jogadorAtual = null;
-                    /*if(jogadorAtual is Guerreiro)
-                    {
-                        jogadorAtual.VerificarEspecial();
-                    }
 
-                    jogadorAtual.VerificarArmadura();*/
-                    bool teste = true;
+
+                        /*if(jogadorAtual is Guerreiro)
+                        {
+                            jogadorAtual.VerificarEspecial();
+                        }
+
+                        jogadorAtual.VerificarArmadura();*/
+                        bool teste = true;
 
                     while (teste)
                     {
-                        if(mago.Vivo == false)
+                        if (mago.Vivo == false)
                         {
                             Console.WriteLine("O MAGO ESTÁ MORTO...");
                         }
@@ -186,6 +195,7 @@ namespace Sistema_De_Combate
                     blindado.VerificarSeMorreu();
                     if (blindado.Vivo == false)
                     {
+                        Console.Clear();
                         if (mago.Vida == 0)
                         {
                             Console.WriteLine("O clérigo curou o mago");
@@ -210,23 +220,34 @@ namespace Sistema_De_Combate
 
                         mago.Vida += mago.VidaInicial;
                         mago.VidaInicial += mago.VidaInicial;
+                        mago.Estamina = 3;
                         guerreiro.Vida += guerreiro.VidaInicial;
                         guerreiro.VidaInicial += guerreiro.VidaInicial;
+                        guerreiro.Estamina = 3;
                         arqueiro.Vida += arqueiro.VidaInicial;
                         arqueiro.VidaInicial += arqueiro.VidaInicial;
+                        arqueiro.Estamina = 3;
                         clerigo.Vida += clerigo.VidaInicial;
                         clerigo.VidaInicial += clerigo.VidaInicial;
+                        clerigo.Estamina = 3;
                         turnos = 0;
+                        Console.WriteLine("Sua PARTY upou de level...");
+                        Console.WriteLine("Todos tiveram a sua vida aumentada...");
+                        Console.WriteLine("Todos tiveram sua ESTAMINA restaurada...");
+                        Console.WriteLine("Aperte qualquer tecla para continuar...");
+                        Console.ReadKey();
 
                         break;
                     }
                 }
 
             }
-
+            jogadorAtual = null;
+            
+            //Segundo encontro HARPIA
             SegundoEncontro(harpia);
             turnos = 0;
-            while (harpia.Vivo == true)
+            while (harpia.Vivo == true && jogadorAtual != mortos)
             {
                 harpia.IA_Harpia(turnos, harpia, guerreiro, mago, arqueiro, clerigo);
 
@@ -311,8 +332,14 @@ namespace Sistema_De_Combate
                         guerreiro.VerificarEspecial();
                         guerreiro.VerificarArmadura();
                     }
+                    else if (clerigo.Vida == 0 && guerreiro.Vida == 0 && mago.Vida == 0 && arqueiro.Vida == 0)
+                    {
+                        jogadorAtual = mortos;
+                        break;
+                    }
                     else
                         jogadorAtual = null;
+
                     /*if(jogadorAtual is Guerreiro)
                     {
                         jogadorAtual.VerificarEspecial();
@@ -383,6 +410,12 @@ namespace Sistema_De_Combate
                         }
                     }
                     harpia.VerificarSeMorreu();
+                    if (clerigo.Vida == 0 && mago.Vida == 0 && guerreiro.Vida == 0 && arqueiro.Vida == 0)
+                    {
+                        //jogadorAtual = null;
+                        harpia.Vivo = false;
+                        break;
+                    }
                     if (harpia.Vivo == false)
                     {
                         mago.Vida += mago.VidaInicial;
@@ -394,12 +427,23 @@ namespace Sistema_De_Combate
                         clerigo.Vida += clerigo.VidaInicial;
                         clerigo.VidaInicial += clerigo.VidaInicial;
                         turnos = 0;
-
+                        Console.WriteLine("Sua PARTY upou de level...");
+                        Console.WriteLine("Todos tiveram a sua vida aumentada...");
+                        Console.WriteLine("Aperte qualquer tecla para continuar...");
+                        Console.ReadKey();
                         break;
                     }
                 }
 
             }
+
+            //Terceiro encontro 
+            
+            if(jogadorAtual == mortos)
+            {
+                Console.WriteLine("TODOS OS JOGADORES MORRERAM");
+            }
+            
         }
         public static void Inicio(Blindado blindado)
         {
@@ -412,7 +456,7 @@ namespace Sistema_De_Combate
             Console.ReadKey();
             Console.Clear();
             Console.WriteLine("\nAdentrando a masmorra vocês se deparam com seu primeiro inimigo...");
-            Console.WriteLine($"Um gramde {blindado.Nome} está a frente de vocês...");
+            Console.WriteLine($"Um grande {blindado.Nome} está a frente de vocês...");
             Console.WriteLine($"Ele é um guarda alto e forte e com uma armadura quase impenetrável...");
             Console.WriteLine("E agora vocês precisa tomar uma decisão...\n");
             Console.WriteLine("Aperte qualquer tecla para continuar...");
@@ -423,22 +467,22 @@ namespace Sistema_De_Combate
         public static void SegundoEncontro(Harpia harpia)
         {
             Console.Clear();
-            Console.WriteLine("\nSua PARTY recistiu ao primeiro encontro...");
-            Console.WriteLine("Vocês enfim entram na MAMORRA SANGRENTA");
-            Console.WriteLine("Um ambeinte úmido e desagradável...");
+            Console.WriteLine("\nSua PARTY resistiu ao primeiro encontro...");
+            Console.WriteLine("Vocês adentram mais a fundo da MASMORRA SANGRENTA");
+            Console.WriteLine("Um ambiente úmido e desagradável...");
             Console.WriteLine("O cheiro de sangue e mofo adentra o nariz de todos...");
             Console.WriteLine("Mas vocês tem uma missão a cumprir...\n");
-            Console.WriteLine("Aperte qualquer tecla para continuar...");
+            Console.WriteLine("\nAperte qualquer tecla para continuar...");
             Console.ReadKey();
             Console.Clear();
-            Console.WriteLine("\nAo fazer uma curva vocês adentram um grande salão...");
+            Console.WriteLine("\nAo fazer uma curva vocês veem um grande salão...");
             Console.WriteLine("Correntes e ossos espalhados enfeitam o lugar...");
             Console.WriteLine("Então vocês escutam um bater de asas...");
             Console.WriteLine($"ao olhar para cima voces veem uma grande {harpia.Nome}...");
-            Console.WriteLine("Ela sobrevou vocês num razante e então para a frente de vocês...");
+            Console.WriteLine("Ela sobrevoa vocês num razante e então para a frente de vocês...");
             Console.WriteLine("Ela parece ser mais forte que o BLINDADO...");
             Console.WriteLine("Mas vocês não entraram aqui para fugir...");
-            Console.WriteLine("Aperte qualquer tecla para continuar...");
+            Console.WriteLine("\nAperte qualquer tecla para continuar...");
             Console.ReadKey();
             Console.Clear();
         }
@@ -476,6 +520,14 @@ namespace Sistema_De_Combate
                 Console.ReadKey();
                 Console.Clear();
             }
+        }
+    }
+
+    class Mortos : Personagem
+    {
+        public override void Atacar(Inimigo inimigo)
+        {
+
         }
     }
 
@@ -990,6 +1042,7 @@ namespace Sistema_De_Combate
                     if (mago.Vida == 0)
                     {
                         mago.Vida = mago.VidaInicial;
+                        mago.Vivo = true;
                         Estamina--;
                         Console.WriteLine($"Você ressucitou o {mago.Nome}...\n");
                     }
@@ -1019,6 +1072,7 @@ namespace Sistema_De_Combate
                     if (guerreiro.Vida == 0)
                     {
                         guerreiro.Vida = guerreiro.VidaInicial;
+                        guerreiro.Vivo = true;
                         Estamina--;
                         Console.WriteLine($"Você ressucitou o {guerreiro.Nome}...\n");
                     }
@@ -1048,6 +1102,7 @@ namespace Sistema_De_Combate
                     if (arqueiro.Vida == 0)
                     {
                         arqueiro.Vida = arqueiro.VidaInicial;
+                        arqueiro.Vivo = true;
                         Estamina--;
                         Console.WriteLine($"Você ressucitou o {arqueiro.Nome}...\n");
                     }
@@ -1120,21 +1175,21 @@ namespace Sistema_De_Combate
         {
             int acertoInimigo;
             int dano;
-            int dadoAcerto;            
+            int dadoAcerto;
 
             dadoAcerto = dadoInimigo.Next(1, 21);
             acertoInimigo = Ataque + dadoAcerto;
-            if (dadoAcerto >= 19 && Vida < VidaInicial /2)
+            if (dadoAcerto >= 19 && Vida < VidaInicial / 2)
             {
                 acertoInimigo = (2 * Ataque) + dadoAcerto;
                 Console.WriteLine($"==== JOGADA {Nome} ====");
                 Console.WriteLine($"====== ENFURECIDO ======");
                 Console.WriteLine($"O {Nome} atacou o {personagem.Nome}");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque*2}");
+                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque * 2}");
                 Console.WriteLine($"Total: {acertoInimigo}");
                 Console.WriteLine($"O {Nome} CRITOU o ataque");
-                dano = dadoInimigo.Next(1, 9)*2;
-                dano = dano*2;
+                dano = dadoInimigo.Next(1, 9) * 2;
+                dano = dano * 2;
                 Console.WriteLine($"Dano total: {dano}");
                 Console.WriteLine("========================\n");
                 personagem.Vida -= dano;
@@ -1375,7 +1430,7 @@ namespace Sistema_De_Combate
 
     class Harpia : Inimigo
     {
-         
+
         int contadorEspecial = 0;
 
         public Harpia()
@@ -1397,7 +1452,7 @@ namespace Sistema_De_Combate
 
             dadoAcerto = dadoInimigo.Next(1, 21);
             acertoInimigo = Ataque + dadoAcerto;
-            
+
             if (dadoAcerto >= 19)
             {
                 Console.WriteLine($"==== JOGADA {Nome} ====");
@@ -1406,7 +1461,7 @@ namespace Sistema_De_Combate
                 Console.WriteLine($"Total: {acertoInimigo}");
                 Console.WriteLine($"O {Nome} CRITOU o ataque");
                 dano = dadoInimigo.Next(1, 7) + dadoInimigo.Next(1, 7) + Ataque;
-                dano = dano*2;
+                dano = dano * 2;
                 Console.WriteLine($"Dano total: {dano}");
                 Console.WriteLine("========================\n");
                 personagem.Vida -= dano;
@@ -1457,7 +1512,7 @@ namespace Sistema_De_Combate
         {
             int dano;
 
-            dano = dadoInimigo.Next(1, 7) *6 ;
+            dano = dadoInimigo.Next(1, 7) * 4;
             guerreiro.Vida -= dano;
             mago.Vida -= dano;
             arqueiro.Vida -= dano;
@@ -1473,18 +1528,26 @@ namespace Sistema_De_Combate
             if (mago.Vida < 0)
             {
                 mago.Vida = 0;
+                mago.Vivo = false;
+                Console.WriteLine("O MAGO MORREU...");
             }
             if (guerreiro.Vida < 0)
             {
                 guerreiro.Vida = 0;
+                guerreiro.Vivo = false;
+                Console.WriteLine("O GUERREIRO MORREU...");
             }
             if (arqueiro.Vida < 0)
             {
                 arqueiro.Vida = 0;
+                arqueiro.Vivo = false;
+                Console.WriteLine("O ARQUEIRO MORREU...");
             }
             if (clerigo.Vida < 0)
             {
                 clerigo.Vida = 0;
+                clerigo.Vivo = false;
+                Console.WriteLine("O CLERIGO MORREU...");
             }
 
         }
@@ -1492,33 +1555,36 @@ namespace Sistema_De_Combate
         public void IA_Harpia(int turnos, Harpia harpia, Guerreiro guerreiro, Mago mago, Arqueiro arqueiro, Clerigo clerigo)
         {
             if (turnos != 0)
-            {                                
+            {
                 //Lógica para usar ou não o especial
-                if (guerreiro.Vida <= guerreiro.VidaInicial)
+                if (guerreiro.Vida < guerreiro.VidaInicial)
                 {
                     contadorEspecial++;
                 }
-                if(mago.Vida <= mago.VidaInicial)
+                if (mago.Vida < mago.VidaInicial)
                 {
                     contadorEspecial++;
                 }
-                if (arqueiro.Vida <= arqueiro.VidaInicial)
+                if (arqueiro.Vida < arqueiro.VidaInicial)
                 {
                     contadorEspecial++;
                 }
-                if (clerigo.Vida <= arqueiro.VidaInicial)
+                if (clerigo.Vida < clerigo.VidaInicial)
                 {
                     contadorEspecial++;
                 }
                 if (contadorEspecial >= 2 && Estamina > 0)
                 {
-                    usarEspecial(guerreiro, mago, arqueiro, clerigo);                    
+                    usarEspecial(guerreiro, mago, arqueiro, clerigo);
+                    contadorEspecial = 0;
                 }
-                contadorEspecial = 0;
+
+
                 //Lógica para ataques normais
-                
-                if (arqueiro.Vida > 0)
+
+                else if (arqueiro.Vida > 0)
                 {
+                    contadorEspecial = 0;
                     harpia.Atacar(arqueiro);
                     arqueiro.VerificarSeMorreu();
                     if (arqueiro.Vivo == false)
@@ -1528,6 +1594,7 @@ namespace Sistema_De_Combate
                 }
                 else if (mago.Vida > 0 && arqueiro.Vida == 0)
                 {
+                    contadorEspecial = 0;
                     harpia.Atacar(mago);
                     mago.VerificarSeMorreu();
                     if (mago.Vivo == false)
@@ -1537,6 +1604,7 @@ namespace Sistema_De_Combate
                 }
                 else if (clerigo.Vida > 0)
                 {
+                    contadorEspecial = 0;
                     harpia.Atacar(clerigo);
                     clerigo.VerificarSeMorreu();
                     if (clerigo.Vivo == false)
@@ -1546,6 +1614,7 @@ namespace Sistema_De_Combate
                 }
                 else if (guerreiro.Vida > 0 && clerigo.Vida == 0)
                 {
+                        contadorEspecial = 0;
                     harpia.Atacar(guerreiro);
                     guerreiro.VerificarSeMorreu();
                     if (guerreiro.Vivo == false)
