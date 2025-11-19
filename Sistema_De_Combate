@@ -16,7 +16,7 @@ namespace Sistema_De_Combate
             Mago mago = new Mago();
             Arqueiro arqueiro = new Arqueiro();
             Clerigo clerigo = new Clerigo();
-            Mortos mortos = new Mortos();
+            //Mortos mortos = new Mortos();
             Personagem jogadorAtual = null;
 
             //Instâncias dos Inimigos
@@ -25,52 +25,52 @@ namespace Sistema_De_Combate
             Corrompido corrompido = new Corrompido();
             Supremo supremo = new Supremo();
             Inimigo inimigoAtual = null;
-            
+
             int turnos = 0;
 
             //Primeiro encontro BLINDADO
             Inicio(blindado);
             inimigoAtual = blindado;
-            Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo, mortos, jogadorAtual);
+            Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo, jogadorAtual);
             //Caso todos os personagens morram
-            if (jogadorAtual == mortos)
+            if (mago.Vivo == false && guerreiro.Vivo == false && arqueiro.Vivo == false && clerigo.Vivo == false)
             {
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
                 Console.ReadKey();
-                Environment.Exit(0);
+                return;
             }
             //Segundo encontro HARPIA
             SegundoEncontro(harpia);
             inimigoAtual = harpia;
-            Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo, mortos, jogadorAtual);
+            Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo, jogadorAtual);
             //Caso todos os personagens morram
-            if (jogadorAtual == mortos)
+            if (mago.Vivo == false && guerreiro.Vivo == false && arqueiro.Vivo == false && clerigo.Vivo == false)
             {
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
                 Console.ReadKey();
-                Environment.Exit(0);
-            }
+                return;
+            }            
             //Terceiro encontro
             TerceiroEncontro(corrompido);
             inimigoAtual = corrompido;
-            Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo, mortos, jogadorAtual);
+            Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo, jogadorAtual);
             //Caso todos os personagens morram
-            if (jogadorAtual == mortos)
+            if (mago.Vivo == false && guerreiro.Vivo == false && arqueiro.Vivo == false && clerigo.Vivo == false)
             {
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
                 Console.ReadKey();
-                Environment.Exit(0);
-            }
+                return;
+            }            
             //Último encontro
             UltimoEncontro(supremo);
             inimigoAtual = supremo;
-            Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo, mortos, jogadorAtual);
+            Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo, jogadorAtual);
             //Caso todos os personagens morram
-            if (jogadorAtual == mortos)
+            if (mago.Vivo == false && guerreiro.Vivo == false && arqueiro.Vivo == false && clerigo.Vivo == false)
             {
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
                 Console.ReadKey();
-                Environment.Exit(0);
+                return;
             }
         }
         public static void Inicio(Blindado blindado)
@@ -173,14 +173,14 @@ namespace Sistema_De_Combate
             Console.Clear();
         }
 
-        public static void Combate(int turnos, Inimigo inimigoAtual, Guerreiro guerreiro, Mago mago, Arqueiro arqueiro, Clerigo clerigo, Mortos mortos, Personagem jogadorAtual )
+        public static void Combate(int turnos, Inimigo inimigoAtual, Guerreiro guerreiro, Mago mago, Arqueiro arqueiro, Clerigo clerigo, Personagem jogadorAtual)
         {
             turnos = 0;
-            while (inimigoAtual.Vivo == true && jogadorAtual != mortos)
+            while (inimigoAtual.Vivo == true )
             {
                 if (mago.Vida == 0 && guerreiro.Vida == 0 && arqueiro.Vida == 0 && clerigo.Vida == 0)
                 {
-                    jogadorAtual = mortos;
+                    
                     break;
                 }
                 inimigoAtual.IA_Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo);
@@ -265,11 +265,10 @@ namespace Sistema_De_Combate
                         guerreiro.VerificarEspecial();
                         guerreiro.VerificarArmadura();
                     }
-                    else if (clerigo.Vida == 0 && guerreiro.Vida == 0 && mago.Vida == 0 && arqueiro.Vida == 0)
-                    {
-                        jogadorAtual = mortos;
+                    if (clerigo.Vida == 0 && guerreiro.Vida == 0 && mago.Vida == 0 && arqueiro.Vida == 0)
+                    {                        
                         break;
-                    }                 
+                    }
 
 
                     /*if(jogadorAtual is Guerreiro)
@@ -390,12 +389,11 @@ namespace Sistema_De_Combate
                     }
                     if (mago.Vida == 0 && guerreiro.Vida == 0 && arqueiro.Vida == 0 && clerigo.Vida == 0)
                     {
-                        jogadorAtual = mortos;
+                        break;
                     }
                 }
 
-            }
-            jogadorAtual = null;
+            }            
         }
     }
 
@@ -662,7 +660,7 @@ namespace Sistema_De_Combate
         }
 
         public override void UsarEspecial(Inimigo inimigo)
-        {                       
+        {
             Estamina--;
 
             int acertoPersonagem;
@@ -688,7 +686,7 @@ namespace Sistema_De_Combate
                 Console.WriteLine($"Dano total: {dano}");
                 Console.WriteLine("========================\n");
                 inimigo.Vida -= dano;
-            }                        
+            }
         }
     }
 
@@ -1058,13 +1056,19 @@ namespace Sistema_De_Combate
 
         public virtual void IA_Combate(int turnos, Inimigo inimigoAtual, Guerreiro guerreiro, Mago mago, Arqueiro arqueiro, Clerigo clerigo) { }
 
-        public virtual void Atacar(Personagem personagem){}
+        public virtual void Atacar(Personagem personagem) { }
+
+        
+
+        //public virtual void Drops() { }
 
 
     }
 
     class Blindado : Inimigo
     {
+        public List<string> Drops = new List<string> { "Espada da Corrupção", "Armadura Reforçada"};
+        
         public Blindado()
         {
             VidaInicial = 50;
@@ -1082,7 +1086,7 @@ namespace Sistema_De_Combate
             int dano;
             int dadoAcerto;
 
-            dadoAcerto = dadoInimigo.Next(1, 21);
+            dadoAcerto = dadoInimigo.Next(1, 21) ;
             acertoInimigo = Ataque + dadoAcerto;
             if (dadoAcerto >= 19 && Vida < VidaInicial / 2)
             {
@@ -1162,7 +1166,7 @@ namespace Sistema_De_Combate
                 Console.WriteLine($"O {Nome} não acertou");
                 Console.WriteLine("========================\n");
             }
-        }        
+        }
 
         public override void IA_Combate(int turnos, Inimigo blindado, Guerreiro guerreiro, Mago mago, Arqueiro arqueiro, Clerigo clerigo)
         {
@@ -1325,6 +1329,8 @@ namespace Sistema_De_Combate
     class Harpia : Inimigo
     {
         int contadorEspecial = 0;
+
+        public List<string> Drops = new List<string> { "Espada da Corrupção", "Armadura Reforçada" };
 
         public Harpia()
         {
@@ -1511,7 +1517,7 @@ namespace Sistema_De_Combate
     class Corrompido : Inimigo
     {
         int contadorEspecial = 0;
-        
+
         public Corrompido()
         {
             VidaInicial = 90;
@@ -1596,7 +1602,7 @@ namespace Sistema_De_Combate
                 {
                     contadorEspecial++;
                 }
-                if (contadorEspecial >= 2 && Estamina > 0 && corrompido.Vida < corrompido.VidaInicial/2)
+                if (contadorEspecial >= 2 && Estamina > 0 && corrompido.Vida < corrompido.VidaInicial / 2)
                 {
                     usarEspecial(guerreiro, mago, arqueiro, clerigo);
                     contadorEspecial = 0;
@@ -1663,7 +1669,7 @@ namespace Sistema_De_Combate
             arqueiro.Vida -= dano;
             clerigo.Vida -= dano;
             Estamina--;
-            Vida += dano*2;
+            Vida += dano * 2;
             if (Vida > VidaInicial)
             {
                 Vida = VidaInicial;
@@ -1673,7 +1679,7 @@ namespace Sistema_De_Combate
             Console.WriteLine($"{Nome} usou ABSORVER ENERGIA VITAL");
             Console.WriteLine($"Dano Total: {dano}");
             Console.WriteLine("TODOS OS PERSONAGENS FORAM AFETADOS");
-            Console.WriteLine($"O {Nome} se curou {dano*2}");
+            Console.WriteLine($"O {Nome} se curou {dano * 2}");
             Console.WriteLine("========================\n");
 
 
