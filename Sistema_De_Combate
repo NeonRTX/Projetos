@@ -15,8 +15,7 @@ namespace Sistema_De_Combate
             Guerreiro guerreiro = new Guerreiro();
             Mago mago = new Mago();
             Arqueiro arqueiro = new Arqueiro();
-            Clerigo clerigo = new Clerigo();
-            //Mortos mortos = new Mortos();
+            Clerigo clerigo = new Clerigo();           
             Personagem jogadorAtual = null;
 
             //Instâncias dos Inimigos
@@ -49,7 +48,7 @@ namespace Sistema_De_Combate
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
                 Console.ReadKey();
                 return;
-            }            
+            }
             //Terceiro encontro
             TerceiroEncontro(corrompido);
             inimigoAtual = corrompido;
@@ -60,7 +59,7 @@ namespace Sistema_De_Combate
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
                 Console.ReadKey();
                 return;
-            }            
+            }
             //Último encontro
             UltimoEncontro(supremo);
             inimigoAtual = supremo;
@@ -176,11 +175,11 @@ namespace Sistema_De_Combate
         public static void Combate(int turnos, Inimigo inimigoAtual, Guerreiro guerreiro, Mago mago, Arqueiro arqueiro, Clerigo clerigo, Personagem jogadorAtual)
         {
             turnos = 0;
-            while (inimigoAtual.Vivo == true )
+            while (inimigoAtual.Vivo == true)
             {
                 if (mago.Vida == 0 && guerreiro.Vida == 0 && arqueiro.Vida == 0 && clerigo.Vida == 0)
                 {
-                    
+
                     break;
                 }
                 inimigoAtual.IA_Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo);
@@ -265,8 +264,8 @@ namespace Sistema_De_Combate
                         guerreiro.VerificarEspecial();
                         guerreiro.VerificarArmadura();
                     }
-                    if (clerigo.Vida == 0 && guerreiro.Vida == 0 && mago.Vida == 0 && arqueiro.Vida == 0)
-                    {                        
+                    if (clerigo.Vivo == false && guerreiro.Vivo == false && mago.Vivo == false && arqueiro.Vivo == false)
+                    {
                         break;
                     }
 
@@ -302,9 +301,26 @@ namespace Sistema_De_Combate
                         Console.WriteLine($"Vida Atual: {inimigoAtual.Vida}/{inimigoAtual.VidaInicial}");
                         Console.WriteLine($"Armadura Atual: {inimigoAtual.Armadura}\n");
                         Console.WriteLine($"--{jogadorAtual.Nome}--");
+                        Console.WriteLine($"--NV {jogadorAtual.Nivel}--");
                         Console.WriteLine($"Vida Atual: {jogadorAtual.Vida}/{jogadorAtual.VidaInicial}");
                         Console.WriteLine($"Armadura Atual: {jogadorAtual.Armadura}");
                         Console.WriteLine($"Estamina Atual: {jogadorAtual.Estamina}\n");
+                        if (jogadorAtual == guerreiro)
+                        {
+                            if (guerreiro.Especial == true)
+                            {
+                                Console.WriteLine("ESPECIAL ATIVO");
+                                Console.WriteLine($"--{guerreiro.turnosEspecial}° TURNO--\n");
+                            }                          
+                        }
+                        if (jogadorAtual == arqueiro)
+                        {
+                            if (arqueiro.Especial == true)
+                            {
+                                Console.WriteLine("ESPECIAL ATIVO");
+                                Console.WriteLine($"--{arqueiro.turnosEspecial}° TURNO--\n");
+                            }
+                        }
                         Console.WriteLine("Escolha a ação que deseja tomar...");
                         Console.WriteLine("1 - Atacar");
                         Console.WriteLine("2 - Defender");
@@ -344,6 +360,7 @@ namespace Sistema_De_Combate
                     if (inimigoAtual.Vivo == false)
                     {
                         Console.Clear();
+                        
                         if (mago.Vida == 0)
                         {
                             Console.WriteLine("O clérigo curou o mago");
@@ -369,17 +386,26 @@ namespace Sistema_De_Combate
                         mago.Vida += mago.VidaInicial;
                         mago.VidaInicial += mago.VidaInicial;
                         mago.Estamina = 3;
+                        mago.Ataque++;
+                        mago.Nivel++;
                         guerreiro.Vida += guerreiro.VidaInicial;
                         guerreiro.VidaInicial += guerreiro.VidaInicial;
                         guerreiro.Estamina = 3;
+                        guerreiro.Ataque++;
+                        guerreiro.Nivel++;
                         arqueiro.Vida += arqueiro.VidaInicial;
                         arqueiro.VidaInicial += arqueiro.VidaInicial;
                         arqueiro.Estamina = 3;
+                        arqueiro.Ataque++;
+                        arqueiro.Nivel++;
                         clerigo.Vida += clerigo.VidaInicial;
                         clerigo.VidaInicial += clerigo.VidaInicial;
                         clerigo.Estamina = 3;
+                        clerigo.Ataque++;
+                        clerigo.Nivel++;
                         turnos = 0;
                         Console.WriteLine("Sua PARTY upou de level...");
+                        Console.WriteLine("Todos tiveram seus ataques ou habilidades melhoradas...");
                         Console.WriteLine("Todos tiveram a sua vida aumentada...");
                         Console.WriteLine("Todos tiveram sua ESTAMINA restaurada...");
                         Console.WriteLine("Aperte qualquer tecla para continuar...");
@@ -393,7 +419,7 @@ namespace Sistema_De_Combate
                     }
                 }
 
-            }            
+            }
         }
     }
 
@@ -407,6 +433,7 @@ namespace Sistema_De_Combate
         public int ArmaduraBase;
         public int Armadura;
         public bool Vivo;
+        public int Nivel;
 
         //Método para ROLAGEM DE DADOS
         public static Random dadoPersonagem = new Random();
@@ -431,20 +458,12 @@ namespace Sistema_De_Combate
             }
         }
     }
-
-    class Mortos : Personagem
-    {
-        public override void Atacar(Inimigo inimigo)
-        {
-
-        }
-    }
-
+  
     class Guerreiro : Personagem
     {
         int turnosArmadura = 0;
-        int turnosEspecial = 0;
-        bool Especial = false;
+        public int turnosEspecial = 0;
+        public bool Especial = false;
 
         public Guerreiro()
         {
@@ -456,6 +475,9 @@ namespace Sistema_De_Combate
             Armadura = 18;
             Nome = "GUERREIRO";
             Vivo = true;
+            Nivel = 1;
+            
+
         }
 
         public override void Atacar(Inimigo inimigo)
@@ -467,6 +489,266 @@ namespace Sistema_De_Combate
 
             dadoAcerto = dadoPersonagem.Next(1, 21);
             acertoPersonagem = Ataque + dadoAcerto;
+            if (Nivel == 4)
+            {
+                if (dadoAcerto >= 19 && Especial == false)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + (Ataque * 2)) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem > inimigo.Armadura && Especial == false)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + (Ataque * 2);
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem < inimigo.Armadura && Especial == false)
+                {
+
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
+                }
+                else if (acertoPersonagem < inimigo.Armadura && Especial == true)
+                {
+
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
+                }
+                else if (dadoAcerto >= 19 && Especial == true)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + (Ataque * 2)) * 2;
+                    danoE = dano;
+                    Console.WriteLine($"Dano total: {dano} + {danoE}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano + danoE;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem > inimigo.Armadura && Especial == true)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + (Ataque * 2);
+                    danoE = dano;
+                    Console.WriteLine($"Dano total: {dano} + {danoE}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano + danoE;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+            }
+            else if (Nivel == 3)
+            {
+                if (dadoAcerto >= 19 && Especial == false)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + Ataque) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem > inimigo.Armadura && Especial == false)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + Ataque;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem < inimigo.Armadura && Especial == false)
+                {
+
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
+                }
+                else if (acertoPersonagem < inimigo.Armadura && Especial == true)
+                {
+
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine("=== ESPECIAL ATIVADO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
+                }
+                else if (dadoAcerto >= 19 && Especial == true)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine("=== ESPECIAL ATIVADO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + Ataque) * 2;
+                    danoE = dano;
+                    Console.WriteLine($"Dano total: {dano} + {danoE}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano + danoE;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem > inimigo.Armadura && Especial == true)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine("=== ESPECIAL ATIVADO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + Ataque;
+                    danoE = dano;
+                    Console.WriteLine($"Dano total: {dano} + {danoE}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano + danoE;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+            }
+            else if (Nivel == 2)
+            {
+                if (dadoAcerto >= 19 && Especial == false)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + Ataque) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem > inimigo.Armadura && Especial == false)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + Ataque;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem < inimigo.Armadura && Especial == false)
+                {
+
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
+                }
+                else if (acertoPersonagem < inimigo.Armadura && Especial == true)
+                {
+
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
+                }
+                else if (dadoAcerto >= 19 && Especial == true)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + Ataque) * 2;
+                    danoE = dano / 2;
+                    Console.WriteLine($"Dano total: {dano} + {danoE}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano + danoE;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem > inimigo.Armadura && Especial == true)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + Ataque;
+                    danoE = dano / 2;
+                    Console.WriteLine($"Dano total: {dano} + {danoE}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano + danoE;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+            }
+            else if (Nivel == 1)
+            {            
             if (dadoAcerto >= 19 && Especial == false)
             {
                 Console.WriteLine("=== JOGADA GUERREIRO ===");
@@ -549,6 +831,7 @@ namespace Sistema_De_Combate
                     inimigo.Vida = 0;
                 }
             }
+            }
         }
 
         public void VerificarArmadura()
@@ -599,6 +882,7 @@ namespace Sistema_De_Combate
             Armadura = 14;
             Nome = "MAGO";
             Vivo = true;
+            Nivel = 1;
 
         }
 
@@ -610,38 +894,147 @@ namespace Sistema_De_Combate
 
             dadoAcerto = dadoPersonagem.Next(1, 21);
             acertoPersonagem = Ataque + dadoAcerto;
-            if (dadoAcerto >= 19)
+            if (Nivel == 4)
             {
-                Console.WriteLine("=== JOGADA MAGO ===");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
-                Console.WriteLine($"Total: {acertoPersonagem}");
-                Console.WriteLine("Voce CRITOU o ataque");
-                dano = (dadoPersonagem.Next(1, 11) + Ataque) * 2;
-                Console.WriteLine($"Dano total: {dano}");
-                Console.WriteLine("========================\n");
-                inimigo.Vida -= dano;
-            }
-            else if (acertoPersonagem > inimigo.Armadura)
-            {
-                Console.WriteLine("=== JOGADA MAGO ===");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
-                Console.WriteLine($"Total para acertar: {acertoPersonagem}");
-                Console.WriteLine("Voce acertou o ataque");
-                dano = dadoPersonagem.Next(1, 11) + Ataque;
-                Console.WriteLine($"Dano total: {dano}");
-                Console.WriteLine("========================\n");
-                inimigo.Vida -= dano;
-            }
-            else if (acertoPersonagem < inimigo.Armadura)
-            {
+                if (dadoAcerto >= 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 11) + dadoPersonagem.Next(1, 11) + dadoPersonagem.Next(1, 11) + (Ataque * 2)) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem > inimigo.Armadura)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 11) + dadoPersonagem.Next(1, 11) + dadoPersonagem.Next(1, 11) + (Ataque * 2);
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem < inimigo.Armadura)
+                {
 
-                Console.WriteLine("=== JOGADA MAGO ===");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
-                Console.WriteLine($"Total para acertar: {acertoPersonagem}");
-                Console.WriteLine("Voce não acertou");
-                Console.WriteLine("========================\n");
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
 
+                }
             }
+            else if (Nivel == 3)
+            {
+                if (dadoAcerto >= 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 11) + dadoPersonagem.Next(1, 11) + (Ataque * 2)) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem > inimigo.Armadura)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 11) + dadoPersonagem.Next(1, 11) + (Ataque * 2);
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem < inimigo.Armadura)
+                {
+
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
+                }
+            }
+            else if (Nivel == 2)
+            {
+                if (dadoAcerto >= 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 11) + dadoPersonagem.Next(1, 11) + Ataque) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem > inimigo.Armadura)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 11) + dadoPersonagem.Next(1, 11) + Ataque;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem < inimigo.Armadura)
+                {
+
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
+                }
+            }
+            else if (Nivel == 1)
+            {
+                if (dadoAcerto >= 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 11) + Ataque) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem > inimigo.Armadura)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 11) + Ataque;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem < inimigo.Armadura)
+                {
+
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
+                }
+            }
+            
 
         }
 
@@ -669,24 +1062,90 @@ namespace Sistema_De_Combate
 
             dadoAcerto = dadoPersonagem.Next(1, 21);
             acertoPersonagem = Ataque + dadoAcerto;
-            if (dadoAcerto >= 19)
+            if (Nivel == 4)
             {
-                Console.WriteLine("=== JOGADA MAGO ===");
-                Console.WriteLine("Voce CRITOU o ataque");
-                dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9)) * 2;
-                Console.WriteLine($"Dano total: {dano}");
-                Console.WriteLine("========================\n");
-                inimigo.Vida -= dano;
+                if (dadoAcerto >= 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9)) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem < 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9);
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
             }
-            else if (acertoPersonagem < 19)
+            else if (Nivel == 3)
             {
-                Console.WriteLine("=== JOGADA MAGO ===");
-                Console.WriteLine("Voce acertou o ataque");
-                dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9);
-                Console.WriteLine($"Dano total: {dano}");
-                Console.WriteLine("========================\n");
-                inimigo.Vida -= dano;
+                if (dadoAcerto >= 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9)) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem < 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9);
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
             }
+            else if (Nivel == 2)
+            {
+                if (dadoAcerto >= 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9)) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem < 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9);
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+            }
+            else if (Nivel == 1)
+            {
+                if (dadoAcerto >= 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9)) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+                else if (acertoPersonagem < 19)
+                {
+                    Console.WriteLine("=== JOGADA MAGO ===");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9);
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                }
+            }            
         }
     }
 
@@ -694,8 +1153,8 @@ namespace Sistema_De_Combate
     {
 
         int turnosArmadura = 0;
-        int turnosEspecial = 0;
-        bool Especial = false;
+        public int turnosEspecial = 0;
+        public bool Especial = false;
 
         public Arqueiro()
         {
@@ -707,6 +1166,8 @@ namespace Sistema_De_Combate
             Armadura = 16;
             Nome = "ARQUEIRO";
             Vivo = true;
+            Nivel = 1;
+
         }
 
         public override void Atacar(Inimigo inimigo)
@@ -843,6 +1304,7 @@ namespace Sistema_De_Combate
             Armadura = 18;
             Nome = "CLÉRIGO";
             Vivo = true;
+            Nivel = 1;
         }
 
         public override void Atacar(Inimigo inimigo)
@@ -1058,7 +1520,7 @@ namespace Sistema_De_Combate
 
         public virtual void Atacar(Personagem personagem) { }
 
-        
+
 
         //public virtual void Drops() { }
 
@@ -1067,8 +1529,8 @@ namespace Sistema_De_Combate
 
     class Blindado : Inimigo
     {
-        public List<string> Drops = new List<string> { "Espada da Corrupção", "Armadura Reforçada"};
-        
+        //public List<string> Drops = new List<string> { "Espada da Corrupção", "Armadura Reforçada" };
+
         public Blindado()
         {
             VidaInicial = 50;
@@ -1086,7 +1548,7 @@ namespace Sistema_De_Combate
             int dano;
             int dadoAcerto;
 
-            dadoAcerto = dadoInimigo.Next(1, 21) ;
+            dadoAcerto = dadoInimigo.Next(1, 21);
             acertoInimigo = Ataque + dadoAcerto;
             if (dadoAcerto >= 19 && Vida < VidaInicial / 2)
             {
@@ -1249,7 +1711,7 @@ namespace Sistema_De_Combate
                     }
                 }
                 //ATAQUES NORMAIS
-                if (guerreiro.Vida > 0 && mago.Vida == 0)
+                else if (guerreiro.Vida > 0 && mago.Vida == 0)
                 {
                     blindado.Atacar(guerreiro);
                     guerreiro.VerificarSeMorreu();
