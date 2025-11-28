@@ -15,7 +15,7 @@ namespace Sistema_De_Combate
             Guerreiro guerreiro = new Guerreiro();
             Mago mago = new Mago();
             Arqueiro arqueiro = new Arqueiro();
-            Clerigo clerigo = new Clerigo();           
+            Clerigo clerigo = new Clerigo();
             Personagem jogadorAtual = null;
 
             //Instâncias dos Inimigos
@@ -26,7 +26,12 @@ namespace Sistema_De_Combate
             Inimigo inimigoAtual = null;
 
             int turnos = 0;
+            bool venceu = false;
+            int tentativa = 0;
 
+            while(venceu == false)
+            {
+                tentativa++;                
             //Primeiro encontro BLINDADO
             Inicio(blindado);
             inimigoAtual = blindado;
@@ -35,6 +40,8 @@ namespace Sistema_De_Combate
             if (mago.Vivo == false && guerreiro.Vivo == false && arqueiro.Vivo == false && clerigo.Vivo == false)
             {
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
+                Console.ReadKey();
+                Console.WriteLine("Aperte qualquer tecla para tentar novamente...");
                 Console.ReadKey();
                 return;
             }
@@ -47,6 +54,8 @@ namespace Sistema_De_Combate
             {
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
                 Console.ReadKey();
+                Console.WriteLine("Aperte qualquer tecla para tentar novamente...");
+                Console.ReadKey();
                 return;
             }
             //Terceiro encontro
@@ -58,20 +67,50 @@ namespace Sistema_De_Combate
             {
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
                 Console.ReadKey();
+                Console.WriteLine("Aperte qualquer tecla para tentar novamente...");
+                Console.ReadKey();
                 return;
             }
             //Último encontro
             UltimoEncontro(supremo);
             inimigoAtual = supremo;
             Combate(turnos, inimigoAtual, guerreiro, mago, arqueiro, clerigo, jogadorAtual);
+            if (supremo.Vivo == false)
+                {
+                    Console.WriteLine("Parabéns...");
+                    Console.WriteLine("Você concluiu a exploração da MASMORRA SANGRENTA...");
+                    Console.WriteLine($"Numero de tentativas: {tentativa}");                    
+                    if (guerreiro.Vivo == true)
+                    {
+                    Console.WriteLine("O Guerreiro ficou vivo...");
+                    }
+                    if (arqueiro.Vivo == true)
+                    {
+                        Console.WriteLine("O Arqueiro ficou vivo...");
+                    }
+                    if (mago.Vivo == true)
+                    {
+                        Console.WriteLine("O Mago ficou vivo...");
+                    }
+                    if (clerigo.Vivo == true)
+                    {
+                        Console.WriteLine("O Clérigo ficou vivo...");
+                    }
+                    Console.ReadKey();
+                    venceu = true;
+                }
             //Caso todos os personagens morram
             if (mago.Vivo == false && guerreiro.Vivo == false && arqueiro.Vivo == false && clerigo.Vivo == false)
             {
                 Console.WriteLine("TODOS OS JOGADORES MORRERAM");
                 Console.ReadKey();
+                Console.WriteLine("Aperte qualquer tecla para tentar novamente...");
+                Console.ReadKey();
                 return;
             }
+            }
         }
+
         public static void Inicio(Blindado blindado)
         {
             Console.WriteLine("\nSua PARTY foi mandada numa missão para investigar a MASMORRA SANGRENTA...");
@@ -309,15 +348,15 @@ namespace Sistema_De_Combate
                         {
                             if (guerreiro.Especial == true)
                             {
-                                Console.WriteLine("ESPECIAL ATIVO");
+                                Console.WriteLine("**ESPECIAL ATIVO**");
                                 Console.WriteLine($"--{guerreiro.turnosEspecial}° TURNO--\n");
-                            }                          
+                            }
                         }
                         if (jogadorAtual == arqueiro)
                         {
                             if (arqueiro.Especial == true)
                             {
-                                Console.WriteLine("ESPECIAL ATIVO");
+                                Console.WriteLine("**ESPECIAL ATIVO**");
                                 Console.WriteLine($"--{arqueiro.turnosEspecial}° TURNO--\n");
                             }
                         }
@@ -357,7 +396,7 @@ namespace Sistema_De_Combate
                         }
                     }
                     inimigoAtual.VerificarSeMorreu();
-                    if (inimigoAtual.Vivo == false)
+                    if (inimigoAtual.Vivo == false && inimigoAtual.Nome != "SUPREMO")
                     {
                         Console.Clear();
                         if (clerigo.Vivo == true)
@@ -383,13 +422,13 @@ namespace Sistema_De_Combate
                                 guerreiro.Vivo = true;
 
                             }
-                        }                        
-
+                        }                      
                         if (mago.Vivo == true)
                         {
                             mago.Vida += mago.VidaInicial;
                             mago.VidaInicial += mago.VidaInicial;
-                            mago.Estamina = 3;
+                            mago.EstaminaInicial++;
+                            mago.Estamina = mago.EstaminaInicial;
                             mago.Ataque++;
                             mago.Nivel++;
                         }
@@ -397,26 +436,33 @@ namespace Sistema_De_Combate
                         {
                             guerreiro.Vida += guerreiro.VidaInicial;
                             guerreiro.VidaInicial += guerreiro.VidaInicial;
-                            guerreiro.Estamina = 3;
+                            guerreiro.EstaminaInicial++;
+                            guerreiro.Estamina = guerreiro.EstaminaInicial;
                             guerreiro.Ataque++;
                             guerreiro.Nivel++;
+                            guerreiro.turnosEspecial = 0;
+                            guerreiro.Especial = false;
                         }
                         if (arqueiro.Vivo == true)
                         {
                             arqueiro.Vida += arqueiro.VidaInicial;
                             arqueiro.VidaInicial += arqueiro.VidaInicial;
-                            arqueiro.Estamina = 3;
+                            arqueiro.EstaminaInicial++;
+                            arqueiro.Estamina = arqueiro.EstaminaInicial;
                             arqueiro.Ataque++;
                             arqueiro.Nivel++;
-                        }                        
+                            arqueiro.turnosEspecial = 0;
+                            arqueiro.Especial = false;
+                        }
                         if (clerigo.Vivo == true)
                         {
                             clerigo.Vida += clerigo.VidaInicial;
                             clerigo.VidaInicial += clerigo.VidaInicial;
-                            clerigo.Estamina = 3;
+                            clerigo.EstaminaInicial++;
+                            clerigo.Estamina = clerigo.EstaminaInicial;
                             clerigo.Ataque++;
                             clerigo.Nivel++;
-                        }                                                                     
+                        }
                         turnos = 0;
                         Console.WriteLine("Sua PARTY upou de level...");
                         if (clerigo.Vivo == true)
@@ -445,13 +491,14 @@ namespace Sistema_De_Combate
                                 Console.WriteLine($"O {mago.Nome} teve sua VIDA aumentada...");
                                 Console.WriteLine($"O {mago.Nome} teve sua ESTAMINA restaurada.../n");
                             }
-                        }                        
+                        }
                         Console.WriteLine("Aperte qualquer tecla para continuar...");
                         Console.ReadKey();
                         break;
                     }
                     if (mago.Vivo == false && guerreiro.Vivo == false && arqueiro.Vivo == false && clerigo.Vivo == false)
                     {
+                        turnos = 0;
                         break;
                     }
                 }
@@ -466,11 +513,12 @@ namespace Sistema_De_Combate
         public int VidaInicial;
         public int Vida;
         public int Estamina;
+        public int EstaminaInicial;
         public int Ataque;
         public int ArmaduraBase;
         public int Armadura;
         public bool Vivo;
-        public int Nivel;       
+        public int Nivel;
 
         //Método para ROLAGEM DE DADOS
         public static Random dadoPersonagem = new Random();
@@ -495,7 +543,7 @@ namespace Sistema_De_Combate
             }
         }
     }
-  
+
     class Guerreiro : Personagem
     {
         int turnosArmadura = 0;
@@ -507,13 +555,14 @@ namespace Sistema_De_Combate
             VidaInicial = 12;
             Vida = 12;
             Estamina = 3;
+            EstaminaInicial = 3;
             Ataque = 4;
             ArmaduraBase = 18;
             Armadura = 18;
             Nome = "GUERREIRO";
             Vivo = true;
             Nivel = 1;
-            
+
 
         }
 
@@ -785,89 +834,89 @@ namespace Sistema_De_Combate
                 }
             }
             else if (Nivel == 1)
-            {            
-            if (dadoAcerto >= 19 && Especial == false)
             {
-                Console.WriteLine("=== JOGADA GUERREIRO ===");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
-                Console.WriteLine($"Total: {acertoPersonagem}");
-                Console.WriteLine("Voce CRITOU o ataque");
-                dano = (dadoPersonagem.Next(1, 9) + Ataque) * 2;
-                Console.WriteLine($"Dano total: {dano}");
-                Console.WriteLine("========================\n");
-                inimigo.Vida -= dano;
-                if (inimigo.Vida < 0)
+                if (dadoAcerto >= 19 && Especial == false)
                 {
-                    inimigo.Vida = 0;
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + Ataque) * 2;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
                 }
-            }
-            else if (acertoPersonagem > inimigo.Armadura && Especial == false)
-            {
-                Console.WriteLine("=== JOGADA GUERREIRO ===");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
-                Console.WriteLine($"Total para acertar: {acertoPersonagem}");
-                Console.WriteLine("Voce acertou o ataque");
-                dano = dadoPersonagem.Next(1, 9) + Ataque;
-                Console.WriteLine($"Dano total: {dano}");
-                Console.WriteLine("========================\n");
-                inimigo.Vida -= dano;
-                if (inimigo.Vida < 0)
+                else if (acertoPersonagem > inimigo.Armadura && Especial == false)
                 {
-                    inimigo.Vida = 0;
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + Ataque;
+                    Console.WriteLine($"Dano total: {dano}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
                 }
-            }
-            else if (acertoPersonagem < inimigo.Armadura && Especial == false)
-            {
-
-                Console.WriteLine("=== JOGADA GUERREIRO ===");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
-                Console.WriteLine($"Total para acertar: {acertoPersonagem}");
-                Console.WriteLine("Voce não acertou");
-                Console.WriteLine("========================\n");
-
-            }
-            else if (acertoPersonagem < inimigo.Armadura && Especial == true)
-            {
-
-                Console.WriteLine("=== JOGADA GUERREIRO ===");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
-                Console.WriteLine($"Total para acertar: {acertoPersonagem}");
-                Console.WriteLine("Voce não acertou");
-                Console.WriteLine("========================\n");
-
-            }
-            else if (dadoAcerto >= 19 && Especial == true)
-            {
-                Console.WriteLine("=== JOGADA GUERREIRO ===");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
-                Console.WriteLine($"Total: {acertoPersonagem}");
-                Console.WriteLine("Voce CRITOU o ataque");
-                dano = (dadoPersonagem.Next(1, 9) + Ataque) * 2;
-                danoE = dano / 2;
-                Console.WriteLine($"Dano total: {dano} + {danoE}");
-                Console.WriteLine("========================\n");
-                inimigo.Vida -= dano + danoE;
-                if (inimigo.Vida < 0)
+                else if (acertoPersonagem < inimigo.Armadura && Especial == false)
                 {
-                    inimigo.Vida = 0;
+
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
                 }
-            }
-            else if (acertoPersonagem > inimigo.Armadura && Especial == true)
-            {
-                Console.WriteLine("=== JOGADA GUERREIRO ===");
-                Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
-                Console.WriteLine($"Total para acertar: {acertoPersonagem}");
-                Console.WriteLine("Voce acertou o ataque");
-                dano = dadoPersonagem.Next(1, 9) + Ataque;
-                danoE = dano / 2;
-                Console.WriteLine($"Dano total: {dano} + {danoE}");
-                Console.WriteLine("========================\n");
-                inimigo.Vida -= dano + danoE;
-                if (inimigo.Vida < 0)
+                else if (acertoPersonagem < inimigo.Armadura && Especial == true)
                 {
-                    inimigo.Vida = 0;
+
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce não acertou");
+                    Console.WriteLine("========================\n");
+
                 }
-            }
+                else if (dadoAcerto >= 19 && Especial == true)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total: {acertoPersonagem}");
+                    Console.WriteLine("Voce CRITOU o ataque");
+                    dano = (dadoPersonagem.Next(1, 9) + Ataque) * 2;
+                    danoE = dano / 2;
+                    Console.WriteLine($"Dano total: {dano} + {danoE}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano + danoE;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
+                else if (acertoPersonagem > inimigo.Armadura && Especial == true)
+                {
+                    Console.WriteLine("=== JOGADA GUERREIRO ===");
+                    Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
+                    Console.WriteLine($"Total para acertar: {acertoPersonagem}");
+                    Console.WriteLine("Voce acertou o ataque");
+                    dano = dadoPersonagem.Next(1, 9) + Ataque;
+                    danoE = dano / 2;
+                    Console.WriteLine($"Dano total: {dano} + {danoE}");
+                    Console.WriteLine("========================\n");
+                    inimigo.Vida -= dano + danoE;
+                    if (inimigo.Vida < 0)
+                    {
+                        inimigo.Vida = 0;
+                    }
+                }
             }
         }
 
@@ -914,6 +963,7 @@ namespace Sistema_De_Combate
             VidaInicial = 8;
             Vida = 8;
             Estamina = 3;
+            EstaminaInicial = 3;
             Ataque = 4;
             ArmaduraBase = 14;
             Armadura = 14;
@@ -1071,7 +1121,7 @@ namespace Sistema_De_Combate
 
                 }
             }
-            
+
 
         }
 
@@ -1182,7 +1232,7 @@ namespace Sistema_De_Combate
                     Console.WriteLine("========================\n");
                     inimigo.Vida -= dano;
                 }
-            }            
+            }
         }
     }
 
@@ -1198,6 +1248,7 @@ namespace Sistema_De_Combate
             VidaInicial = 12;
             Vida = 12;
             Estamina = 3;
+            EstaminaInicial = 3;
             Ataque = 4;
             ArmaduraBase = 16;
             Armadura = 16;
@@ -1293,7 +1344,7 @@ namespace Sistema_De_Combate
                     Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
                     Console.WriteLine($"Total: {acertoPersonagem}");
                     Console.WriteLine("Voce CRITOU o ataque");
-                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + (Ataque*2)) * 2;
+                    dano = (dadoPersonagem.Next(1, 9) + dadoPersonagem.Next(1, 9) + (Ataque * 2)) * 2;
                     Console.WriteLine($"Dano total: {dano}");
                     Console.WriteLine("========================\n");
                     inimigo.Vida -= dano;
@@ -1494,7 +1545,7 @@ namespace Sistema_De_Combate
                         inimigo.Vida = 0;
                     }
                 }
-            }            
+            }
         }
 
         public void VerificarArmadura()
@@ -1539,6 +1590,7 @@ namespace Sistema_De_Combate
             VidaInicial = 10;
             Vida = 10;
             Estamina = 3;
+            EstaminaInicial = 3;
             Ataque = 4;
             ArmaduraBase = 18;
             Armadura = 18;
@@ -1597,7 +1649,7 @@ namespace Sistema_De_Combate
                     Console.WriteLine($"Rolagem: {dadoAcerto} + {Ataque}");
                     Console.WriteLine($"Total: {acertoPersonagem}");
                     Console.WriteLine("Voce CRITOU o ataque");
-                    dano = (dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque*2)) * 2;
+                    dano = (dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque * 2)) * 2;
                     Console.WriteLine($"Dano total: {dano}");
                     Console.WriteLine("========================\n");
                     inimigo.Vida -= dano;
@@ -1695,16 +1747,21 @@ namespace Sistema_De_Combate
 
         public void UsarEspecialClerigo(Mago mago, Guerreiro guerreiro, Arqueiro arqueiro, Clerigo clerigo)
         {
-
+                       
             Console.WriteLine("Quem você deseja curar?");
             Console.WriteLine($"1 - Clérigo(VOCÊ): {clerigo.Vida}/{clerigo.VidaInicial}");
             Console.WriteLine($"2 - Mago: {mago.Vida}/{mago.VidaInicial}");
             Console.WriteLine($"3 - Guerreiro: {guerreiro.Vida}/{guerreiro.VidaInicial}");
-            Console.WriteLine($"4 - Arqueiro: {arqueiro.Vida}/{arqueiro.VidaInicial}");
+            Console.WriteLine($"4 - Arqueiro: {arqueiro.Vida}/{arqueiro.VidaInicial}");            
+            if (Nivel == 4)
+            {
+                Console.WriteLine($"5 - CURAR TODOS...");
+            }
 
             int opcao1;
             opcao1 = Convert.ToInt32(Console.ReadLine());
             Console.Clear();
+
             switch (opcao1)
             {
                 case 1:
@@ -1735,7 +1792,7 @@ namespace Sistema_De_Combate
                     {
                         if (clerigo.Vida < clerigo.Vida / 2)
                         {
-                            clerigo.Vida += dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque*2) + 6;
+                            clerigo.Vida += dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque * 2) + 6;
                             if (clerigo.Vida > clerigo.VidaInicial)
                             {
                                 clerigo.Vida = clerigo.VidaInicial;
@@ -1799,7 +1856,7 @@ namespace Sistema_De_Combate
                             Estamina--;
                             Console.WriteLine("Você se curou...\n");
                         }
-                    }                    
+                    }
                     break;
 
                 case 2:
@@ -1844,7 +1901,7 @@ namespace Sistema_De_Combate
                         }
                         else if (mago.Vida < mago.VidaInicial / 2)
                         {
-                            mago.Vida += dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque*2) + 6;
+                            mago.Vida += dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque * 2) + 6;
                             if (mago.Vida > mago.VidaInicial)
                             {
                                 mago.Vida = mago.VidaInicial;
@@ -1922,7 +1979,7 @@ namespace Sistema_De_Combate
                             Estamina--;
                             Console.WriteLine($"Você curou o {mago.Nome}...\n");
                         }
-                    }                    
+                    }
                     break;
 
                 case 3:
@@ -1967,7 +2024,7 @@ namespace Sistema_De_Combate
                         }
                         else if (guerreiro.Vida < guerreiro.VidaInicial / 2)
                         {
-                            guerreiro.Vida += dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque*2) + 6;
+                            guerreiro.Vida += dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque * 2) + 6;
                             if (guerreiro.Vida > guerreiro.VidaInicial)
                             {
                                 guerreiro.Vida = guerreiro.VidaInicial;
@@ -2045,7 +2102,7 @@ namespace Sistema_De_Combate
                             Estamina--;
                             Console.WriteLine($"Você curou o {guerreiro.Nome}...\n");
                         }
-                    }                    
+                    }
                     break;
 
                 case 4:
@@ -2090,7 +2147,7 @@ namespace Sistema_De_Combate
                         }
                         else if (arqueiro.Vida < arqueiro.VidaInicial / 2)
                         {
-                            arqueiro.Vida += dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque*2) + 6;
+                            arqueiro.Vida += dadoPersonagem.Next(1, 7) + dadoPersonagem.Next(1, 7) + (Ataque * 2) + 6;
                             if (arqueiro.Vida > arqueiro.VidaInicial)
                             {
                                 arqueiro.Vida = arqueiro.VidaInicial;
@@ -2168,7 +2225,23 @@ namespace Sistema_De_Combate
                             Estamina--;
                             Console.WriteLine($"Você curou o {arqueiro.Nome}...\n");
                         }
-                    }                    
+                    }
+                    break;
+
+                case 5:
+                    if (Estamina >= 3)
+                    {
+                        guerreiro.Vida = guerreiro.VidaInicial;
+                        mago.Vida = mago.VidaInicial;
+                        arqueiro.Vida = arqueiro.VidaInicial;
+                        clerigo.Vida = clerigo.VidaInicial;
+                        Estamina = Estamina - 3;
+                        Console.WriteLine("VOCÊ CUROU TODOS...");
+                    }
+                    else if (Estamina < 3)
+                    {
+                        return;
+                    }
                     break;
             }
         }
@@ -2228,8 +2301,8 @@ namespace Sistema_De_Combate
 
         public Blindado()
         {
-            VidaInicial = 50;
-            Vida = 45;
+            VidaInicial = 100;
+            Vida = 100;
             Estamina = 3;
             Ataque = 4;
             Armadura = 16;
@@ -2491,8 +2564,8 @@ namespace Sistema_De_Combate
 
         public Harpia()
         {
-            VidaInicial = 60;
-            Vida = 60;
+            VidaInicial = 120;
+            Vida = 120;
             Estamina = 3;
             Ataque = 6;
             Armadura = 13;
@@ -2574,25 +2647,25 @@ namespace Sistema_De_Combate
             {
                 mago.Vida = 0;
                 mago.Vivo = false;
-                Console.WriteLine("O MAGO MORREU...");
+                //Console.WriteLine("O MAGO MORREU...");
             }
             if (guerreiro.Vida < 0)
             {
                 guerreiro.Vida = 0;
                 guerreiro.Vivo = false;
-                Console.WriteLine("O GUERREIRO MORREU...");
+                //Console.WriteLine("O GUERREIRO MORREU...");
             }
             if (arqueiro.Vida < 0)
             {
                 arqueiro.Vida = 0;
                 arqueiro.Vivo = false;
-                Console.WriteLine("O ARQUEIRO MORREU...");
+                //Console.WriteLine("O ARQUEIRO MORREU...");
             }
             if (clerigo.Vida < 0)
             {
                 clerigo.Vida = 0;
                 clerigo.Vivo = false;
-                Console.WriteLine("O CLERIGO MORREU...");
+                //1Console.WriteLine("O CLERIGO MORREU...");
             }
 
         }
@@ -2677,8 +2750,8 @@ namespace Sistema_De_Combate
 
         public Corrompido()
         {
-            VidaInicial = 90;
-            Vida = 85;
+            VidaInicial = 180;
+            Vida = 180;
             Estamina = 3;
             Ataque = 5;
             Armadura = 15;
@@ -2874,13 +2947,13 @@ namespace Sistema_De_Combate
 
         public Supremo()
         {
-            VidaInicial = 200;
-            Vida = 200;
+            VidaInicial = 400;
+            Vida = 400;
             Estamina = 6;
             Ataque = 8;
             Armadura = 15;
             Vivo = true;
-            Nome = "CORROMPIDO";
+            Nome = "SUPREMO";
         }
 
         public override void Atacar(Personagem personagem)
